@@ -81,9 +81,17 @@ class Grass(Obj):
 
 class Air(Dynamic_Obj):
     def __init__(self) -> None:
-        super().__init__("Air", 0, NOTHING_TEXTURE)
+        super().__init__("Air", 0, NOTHING_TEXTURE, False)
+
+
+class TEST(Obj):
+    def __init__(self) -> None:
+        super().__init__("TEST", 0, Textures["Obj"]["pc"])
+    def on_interact(self, world, user):
+        user.open_gui("combat_gui")
 registerObj(Grass)
 registerObj(Air)
+registerObj(TEST)
 
 
 

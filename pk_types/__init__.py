@@ -555,7 +555,7 @@ TYPES = [
 	"ethanol",
 	"sugar",
 	"plastic"
-	]
+]
 
 def get_type_mult2(type1, type2) -> float | int:
 	if type1 in TYPES and type2 in TYPES:
@@ -563,8 +563,6 @@ def get_type_mult2(type1, type2) -> float | int:
 	return 1
 
 def get_type_mult3(type1, type2, type3) -> float | int:
-	if None in [type1, type2]:
-		return 1
 	if type1 in TYPES and type2 in TYPES and type3 in TYPES:
 		return TYPE_TABLE[type1][type2] * TYPE_TABLE[type1][type2]
 	return 1

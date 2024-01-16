@@ -52,6 +52,9 @@ type of event :
     Event_on_player_drop_item:
         function : (user : character, slot : int) 
         // return true to cancel the drop
+
+    Event_ability_tick:
+        function : (user, player, enemy)
 """
 class Event:
     def __init__(self, type : Event_type, function : 'function'):

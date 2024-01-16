@@ -82,20 +82,27 @@ class World:
         
     def add_background_Obj(self, n:Obj, pos : Vec):
         c = self.get_Chunk_from_pos(pos)
-        self.get_Chunk_from_pos(pos).background_obj[(pos.y - c.top_left_pos.y) // OBJ_SIZE][(pos.x - c.top_left_pos.x) // OBJ_SIZE] = n
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.background_obj[pos.y][pos.x] = n
 
     def can_move_to(self, player, pos):
+        if self.get_Obj(pos).hitbox:
+            return 0
+        if self.get_dyn_Obj(pos).hitbox:
+            return 0
+        if self.get_dyn_Obj_fore(pos).hitbox:
+            return 0
+        if self.get_Obj_fore(pos).hitbox:
+            return 0
         return 1
     def add_Obj(self, n:Obj, pos : Vec)->None:
         c = self.get_Chunk_from_pos(pos)
-        self.get_Chunk_from_pos(pos).objects[(pos.y - c.top_left_pos.y) // OBJ_SIZE][(pos.x - c.top_left_pos.x) // OBJ_SIZE] = n
-
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.objects[pos.y][pos.x] = n
     def add_Dyn_Obj(self, n:Dynamic_Obj, pos : Vec)->None:
-        """
-        add an Dyn_Obj to the world
-        if the Dyn_Obj is in a chunk that doesn't exists the chunk will be generated 
-        """
-        self.get_Chunk_from_pos(pos).dyn_objects.append(n)
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.dyn_objects[pos.y][pos.x] = n
         
     def gen_Chunk_at(self, pos:Vec):
         """
@@ -160,10 +167,18 @@ class World:
         return self.chunk_exists_at(pos // CHUNK_SIZE)
     
     def get_Obj(self, pos:Vec) ->Obj:
-        return self.get_Chunk_from_pos(pos).objects[pos.y][pos.x]
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        return c.objects[pos.y][pos.x]
+    def get_Obj_fore(self, pos:Vec) ->Obj:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        return c.objects_foreground[pos.y][pos.x]
     
     def get_background_Obj(self, pos:Vec) ->Obj:
-        return self.get_Chunk_from_pos(pos).background_obj[pos.y][pos.x]
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        return c.background_obj[pos.y][pos.x]
 
     def remove_entity(self, entity : Npc):
         chunk = self.get_Chunk_from_pos(entity.pos)
@@ -174,7 +189,13 @@ class World:
         self.get_Chunk_from_pos(pos).objects[pos.y][pos.x] = Objs["Air"]
 
     def get_dyn_Obj(self, pos:Vec) -> Dynamic_Obj:
-        return self.get_Chunk_from_pos(pos).dyn_objects[pos.y][pos.x]
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        return c.dyn_objects[pos.y][pos.x]
+    def get_dyn_Obj_fore(self, pos:Vec) -> Dynamic_Obj:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        return c.dyn_objects_foreground[pos.y][pos.x]
 
     def on_load(self):
         for i in events[Event_on_world_load]:
@@ -225,8 +246,6 @@ class World:
                     __fore_dyn_obj.append((i + c.top_left_pos.x, k + c.top_left_pos.y, c.dyn_objects_foreground[k // OBJ_SIZE][i // OBJ_SIZE]))
 
         __offset = Vec(scr_w // 2, scr_h // 2) - players[0].pos - Vec(players[0].current_texture.get_width() // 2, players[0].current_texture.get_height() // 2)
-
-
 
         #draw background objects
         for i in __bg_obj:

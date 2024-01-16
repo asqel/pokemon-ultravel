@@ -60,13 +60,6 @@ class PK_tinkatink:
 	def on_level(self, player):...
 
 
-class Move:
-	def __init__(self, pp : int, precision : int, type1 : str, type2 : str = None, category : str = "physic") -> None:
-		self.pp = pp
-		self.precision = precision
-		self.category = category
-		self.types = [type1, type2]
-
 class AT_tackle:
 	def __init__(self) -> None:
 		self.pp = 35

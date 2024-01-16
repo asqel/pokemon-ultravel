@@ -44,6 +44,7 @@ def check_keys():
     for i in pygame_events:
         if i.type == py.MOUSEBUTTONDOWN:
             if (1,i.button) == key_map[t_sprint]:
+                print(players[0].world.get_Chunk_from_pos(players[0].pos).objects)
                 if not players[0].is_moving:
                     players[0].speed = 5
             elif (1,i.button) == key_map[t_slot1]:
@@ -233,10 +234,7 @@ def main():
         for i in events[Event_on_textures_load_t]:
             i.function(Textures)
 
-        starting_world = World("bed room",(125, 125, 125))
-        for i in range(10):
-            for k in range(10):
-                starting_world.add_background_Obj(Objs["Grass"](), Vec(i*50, k*50))
+        starting_world = load_test_world()
         players.append(Character(100, 0, starting_world))
         players[0].pv = 100
 
@@ -318,4 +316,39 @@ def main():
         running_dict["global"] = True
         running_dict["server"] = True
 
+
+def load_test_world():
+    w = World("bedm",(125, 125, 125))
+    for i in range(10):
+        for k in range(10):
+            w.add_background_Obj(Objs["Grass"](), Vec(i*50, k*50))
+    w.add_Obj(Objs["TEST"](), Vec(-50, -50))
+    return w
 main()
+
+
+"""
+new keys:
+    up
+    down
+    left
+    right
+    interact / confirm
+    cancel
+    menu
+
+
+!TODO :
+    updater:
+        look on github a specifique fill downloads it an execute it
+        take current_version_update.py and execute it repeat until nor more update
+        ex:
+            game_version : 1.0.0
+            available : from_1.0.0.py, from_1.0.1.py, from_1.0.2.py
+            dl from_1.0.0.py executet it now game_version : 1.0.1
+            dl from_1.0.1.py execute it now game_version : 1.0.2
+
+
+
+
+"""
