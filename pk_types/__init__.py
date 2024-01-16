@@ -17,11 +17,11 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 1,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 0,
-	"ethanol" : 0,
-	"sugar" : 0.5,
-	"plastic" : 2
+		"fairy" : 1,
+		"light" : 0,
+		"ethanol" : 0,
+		"sugar" : 0.5,
+		"plastic" : 2
 	},
 	"fire": {
 		"normal": 1,
@@ -68,7 +68,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 	"fairy" : 1,
 	"light" : 1,
 	"ethanol" : 1,
-	"sugar" : 2,
+	"sugar" : 0.5,
 	"plastic" : 0.5
 	},
 	"electric": {
@@ -90,7 +90,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dark": 1,
 		"steel": 1,
 	"fairy" : 1,
-	"light" : 0,
+	"light" : 1,
 	"ethanol" : 1,
 	"sugar" : 1,
 	"plastic" : 0
@@ -265,7 +265,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 	"light" : 0.5,
 	"ethanol" : 0.5,
 	"sugar" : 0.5,
-	"plastic" : 1
+	"plastic" : 2
 	},
 	"bug": {
 		"normal": 1,
@@ -312,7 +312,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 	"fairy" : 1,
 	"light" : 1,
 	"ethanol" : 1,
-	"sugar" : 2,
+	"sugar" : 1,
 	"plastic" : 1
 	},
 	"ghost": {
@@ -384,7 +384,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"fairy" : 0.5,
 		"light" : 2,
 		"ethanol" : 1,
-		"sugar" : 2,
+		"sugar" : 1,
 		"plastic" : 1
 	},
 	"steel": {
@@ -455,7 +455,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0,
 		"fairy" : 2,
 		"light" : 1,
-		"ethanol" : 0.5,
+		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 1
 	},
@@ -480,7 +480,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"fairy" : 2,
 		"light" : 0.5,
 		"ethanol" : 1,
-		"sugar" : 2,
+		"sugar" : 1,
 		"plastic" : 0
 	},
 	"light": {
@@ -494,7 +494,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"poison": 1,
 		"ground": 1,
 		"flying": 1,
-		"psychic": 2,
+		"psychic": 1,
 		"bug": 0.5,
 		"rock": 0.5,
 		"ghost": 2,
@@ -528,7 +528,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"fairy" : 1,
 		"light" : 0.5,
 		"ethanol" : 1,
-		"sugar" : 2,
+		"sugar" : 1,
 		"plastic" : 2
 	}
 }
@@ -568,3 +568,28 @@ def get_type_mult3(type1, type2, type3) -> float | int:
 	if type1 in TYPES and type2 in TYPES and type3 in TYPES:
 		return TYPE_TABLE[type1][type2] * TYPE_TABLE[type1][type2]
 	return 1
+
+
+
+def get_weakness(type1 : str):
+	res = {}
+	for i in TYPES:
+		res[i] = TYPE_TABLE[i][type1]
+	return res
+
+def get_weakness2(type1, type2):
+	r1 = get_weakness(type1)
+	r2 = get_weakness(type2)
+	res = {}
+	for i in TYPES:
+		res[i] = r1[i] * r2[i]
+	return res
+
+def print_weak(d):
+	for i in TYPES:
+		print(f"	{i}{' ' *( 10 - len(i))}: {d[i]}")
+if __name__ == "__main__":
+	t1 = "psychic"
+	t2 = "sugar"
+	print(f"{t1} / {t2}")
+	print_weak(get_weakness2(t1, t2))
