@@ -153,6 +153,13 @@ MC_FRAMES = [
     [Textures["player"]["mc_l0"], Textures["player"]["mc_l1"], Textures["player"]["mc_l2"]]
 ]
 
+MC2_FRAMES = [
+    [Textures["player"]["mc2_u0"], Textures["player"]["mc2_u1"], Textures["player"]["mc2_u2"]],
+    [Textures["player"]["mc2_r0"], Textures["player"]["mc2_r1"], Textures["player"]["mc2_r2"]],
+    [Textures["player"]["mc2_d0"], Textures["player"]["mc2_d1"], Textures["player"]["mc2_d2"]],
+    [Textures["player"]["mc2_l0"], Textures["player"]["mc2_l1"], Textures["player"]["mc2_l2"]]
+]
+
 
 NOTHING_TEXTURE=py.Surface((50,50)).convert_alpha()
 NOTHING_TEXTURE.fill(py.Color(0,0,0,0))
