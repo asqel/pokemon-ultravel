@@ -31,9 +31,17 @@ running_dict = {
 
 pygame_events=[]
     
+place_type = 0
+place_type_str = [
+    "background object",
+    "object",
+    "foreground object",
+    "dynamics object",
+    "foreground dynamics object"
+]
 
 def server_thread():
-    global running_dict, g_tps, pygame_events, show_hitbox, obj_idx
+    global running_dict, g_tps, pygame_events, show_hitbox, obj_idx, place_type
 
     loop_start = time()
     loop_count = 0
@@ -71,10 +79,26 @@ def server_thread():
                         obj_idx+=1
                         if obj_idx == len(Objs.keys()):
                             obj_idx=0
+                    if i.key == K_DOWN:
+                        place_type +=1
+                        if place_type == 5:
+                            place_type = 0
+                        if place_type in (3, 4):
+                            obj_idx = min(len(Dynamic_Objs.keys()) - 1, obj_idx)
+                        else:
+                            obj_idx = min(len(Objs.keys()) - 1, obj_idx)
+                    if i.key == K_UP:
+                        place_type -=1
+                        if place_type == -1:
+                            place_type = 4
+                        if place_type in (3, 4):
+                            obj_idx = min(len(Dynamic_Objs.keys()) - 1, obj_idx)
+                        else:
+                            obj_idx = min(len(Objs.keys()) - 1, obj_idx)
                     if i.key == K_p:
-                        starting_world.add_Obj(Objs[list(Objs.keys())[obj_idx]](*tuple(players[0].pos)))
+                        starting_world.add_Obj(Objs[list(Objs.keys())[obj_idx]],players[0].pos)
                     if i.key == K_m:
-                        starting_world.add_background_Obj(Objs[list(Objs.keys())[obj_idx]](*tuple(players[0].pos)))
+                        starting_world.add_background_Obj(Objs[list(Objs.keys())[obj_idx]],players[0].pos)
                     if i.key == K_o:#delete obj att
                         c=starting_world.get_Chunk_from_pos(players[0].pos)
                         for k in c.objects:
@@ -108,19 +132,19 @@ def server_thread():
         if not players[0].guis:
             pushed_keys=py.key.get_pressed()
             if pushed_keys[py.K_q] and not cooldown:
-                players[0].pos.x-=50
+                players[0].pos.x -= TILE_SIZE
                 cooldown=20
                 
             if pushed_keys[py.K_d] and not cooldown:
-                players[0].pos.x+=50
+                players[0].pos.x += TILE_SIZE
                 cooldown=20
                 
             if pushed_keys[py.K_z] and not cooldown:
-                players[0].pos.y-=50
+                players[0].pos.y -= TILE_SIZE
                 cooldown=20
                 
             if pushed_keys[py.K_s] and not cooldown:
-                players[0].pos.y+=50
+                players[0].pos.y += TILE_SIZE
                 cooldown=20
             if cooldown:
                 cooldown-=1
@@ -167,16 +191,17 @@ def main():
         screen.blit(arial.render(f"mid tps: {int(g_tps)}", False, (255, 0, 0)), (0, 30))
         screen.blit(arial.render(str(players[0].pos.floor()), False, (255, 0, 0)), (0, 60))
         screen.blit(arial.render(str(players[0].world.get_Chunk_from_pos(players[0].pos).pos), False, (255, 0, 0)), (0, 90))
+        screen.blit(arial.render(place_type_str[place_type], False, (255, 0, 0)), (0, 90))
 
         #draw crusor
         if cursor_cooldown:
             cursor_cooldown-=1
         if 0<cursor_cooldown<=30: # draw obj
-            texture=Objs[list(Objs.keys())[obj_idx]](0,0).texture
+            texture=Objs[list(Objs.keys())[obj_idx]]().texture
             s=py.Surface((texture.get_width(), texture.get_height()))
             s.blit(texture,(0,0))
             s.set_alpha(100)
-            screen.blit(s,(screen.get_width()//2-25,screen.get_height()//2-25))
+            screen.blit(s,(screen.get_width()//2-TILE_SIZE//2,screen.get_height()//2-TILE_SIZE//2))
 
         if not cursor_cooldown:
             cursor_cooldown=40
@@ -227,7 +252,7 @@ starting_world.has_to_collide=True
 
 
 
-players.append(Character("","","",None,None,[NOTHING_TEXTURE for i in range(4)],None,0,0,starting_world))
+players.append(Character(0, 0, starting_world))
 players[0].is_world_editor = True
 obj_idx=0
 

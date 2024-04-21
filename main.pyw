@@ -259,8 +259,8 @@ def main():
             display_screen_width, display_screen_height = display_screen.get_size()
 
             # Calculer les dimensions ajustées de l'affichage de screen
-            scale_factor_width = display_screen_width // screen.get_width()
-            scale_factor_height = display_screen_height // screen.get_height()
+            scale_factor_width = display_screen_width / screen.get_width()
+            scale_factor_height = display_screen_height / screen.get_height()
             scale_factor = min(scale_factor_width, scale_factor_height)
 
             adjusted_width = int(screen.get_width() * scale_factor)
@@ -294,7 +294,7 @@ def main():
 
 def load_test_world():
     w = World("bedm",(125, 125, 125))
-    for i in range(10):
+    for i in range(20):
         for k in range(10):
             w.add_background_Obj(Objs["Grass"](), Vec(i*TILE_SIZE, k*TILE_SIZE))
     w.add_Obj(Objs["TEST"](), Vec(-TILE_SIZE, -TILE_SIZE))
