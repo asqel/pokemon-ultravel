@@ -28,20 +28,9 @@ def save_Obj(o:Obj):
         "id":o.id,
         "toplayer":o.toplayer,
     }
-    
-def save_dyn_Obj(o : Dynamic_Obj):
-    return {
-        "pos":save_vec(o.pos),
-        "data":o.data,
-        "hitbox":save_hitbox(o.hitbox),
-        "id":o.id,
-        "toplayer":o.toplayer,
-    }
-    
 def save_chunk(c:"Chunk"):
     return {
         "background_obj":[save_Obj(i) for i in c.background_obj] ,   
-        "Dyn_Obj":[save_dyn_Obj(i) for i in c.dyn_objects],
         "entities":[],
         "hitboxes":[save_hitbox(i) for i in c.hitboxes],
         "objects":[save_Obj(i) for i in c.objects],
@@ -76,14 +65,6 @@ def load_obj(d):
     x.hitbox=load_hitbox(d["hitbox"])
     return x
          
-def load_Dyn_obj(d):
-    if d["id"] not in Dynamic_Objs.keys():
-        return None
-    x=Dynamic_Objs[d["id"]](d["pos"][0],d["pos"][1])
-    x.toplayer=d["toplayer"]
-    x.data=d["data"]
-    x.hitbox=load_hitbox(d["hitbox"])
-    return x
 
 def load_chunk(d,w):
     import world as wo

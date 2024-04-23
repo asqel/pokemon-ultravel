@@ -18,11 +18,11 @@ class Chunk:
         self.world :World = world
         self.entities : list[Npc]=[]
         # [y][x]
-        self.background_obj : list[list[Obj]] = [[Objs["Air"]() for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.objects : list[list[Obj]] = [[Objs["Air"]() for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.objects_foreground : list[list[Obj]] = [[Objs["Air"]() for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.dyn_objects : list[list[Dynamic_Obj]] = [[Objs["Air"]() for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.dyn_objects_foreground : list[list[Dynamic_Obj]] = [[Objs["Air"]() for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.background_obj : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.objects : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.dyn_objects : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.dyn_objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
 
     def get_borders(self)->list['Vec']:
         """
@@ -99,11 +99,18 @@ class World:
         c = self.get_Chunk_from_pos(pos)
         pos = (pos - c.top_left_pos)// OBJ_SIZE
         c.objects[pos.y][pos.x] = n
-    def add_Dyn_Obj(self, n:Dynamic_Obj, pos : Vec)->None:
+    def add_foreground_Obj(self, n:Obj, pos : Vec)->None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.objects_foreground[pos.y][pos.x] = n
+    def add_Dyn_Obj(self, n:Obj, pos : Vec)->None:
         c = self.get_Chunk_from_pos(pos)
         pos = (pos - c.top_left_pos)// OBJ_SIZE
         c.dyn_objects[pos.y][pos.x] = n
-        
+    def add_foreground_Dyn_Obj(self, n:Obj, pos : Vec)->None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.dyn_objects_foreground[pos.y][pos.x] = n   
     def gen_Chunk_at(self, pos:Vec):
         """
         generate a new chunk at {pos} (pos of chunk)
@@ -188,11 +195,11 @@ class World:
     def remove_obj_at(self, pos: Vec):
         self.get_Chunk_from_pos(pos).objects[pos.y][pos.x] = Objs["Air"]
 
-    def get_dyn_Obj(self, pos:Vec) -> Dynamic_Obj:
+    def get_dyn_Obj(self, pos:Vec) -> Obj:
         c = self.get_Chunk_from_pos(pos)
         pos = (pos - c.top_left_pos)// OBJ_SIZE
         return c.dyn_objects[pos.y][pos.x]
-    def get_dyn_Obj_fore(self, pos:Vec) -> Dynamic_Obj:
+    def get_dyn_Obj_fore(self, pos:Vec) -> Obj:
         c = self.get_Chunk_from_pos(pos)
         pos = (pos - c.top_left_pos)// OBJ_SIZE
         return c.dyn_objects_foreground[pos.y][pos.x]
@@ -214,8 +221,8 @@ class World:
         __bg_obj : list[tuple[int, int, Obj]] = []
         __objects : list[tuple[int, int, Obj]] = []
         __fore_objects : list[tuple[int, int, Obj]] = []
-        __dyn_obj : list[tuple[int, int, Dynamic_Obj]] = []
-        __fore_dyn_obj : list[tuple[int, int, Dynamic_Obj]] = []
+        __dyn_obj : list[tuple[int, int, Obj]] = []
+        __fore_dyn_obj : list[tuple[int, int, Obj]] = []
         __players : list[Character] = [players[i] for i in range(1,len(players))]#get players except user
         __entities : list[Npc] = []
         __chunks : list[Chunk] = []
@@ -440,7 +447,7 @@ class World:
         for i in chunks:
             i.tick()
             
-        __dyn_objs : list[Dynamic_Obj] = []
+        __dyn_objs : list[Obj] = []
         __entities : list[Npc] = []
 
         for i in chunks:
@@ -484,6 +491,26 @@ class World:
                 players[0].inventaire[i] = items["Air"](1)
         return 0
 
+    def remove_background_Obj(self, pos : Vec) -> None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.background_obj[pos.y][pos.x] = default_air
+    def remove_Obj(self, pos : Vec) -> None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.objects[pos.y][pos.x] = default_air
+    def remove_foreground_Obj(self, pos : Vec) -> None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.objects_foreground[pos.y][pos.x] = default_air
+    def remove_Dyn_Obj(self, pos : Vec) -> None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.dyn_objects[pos.y][pos.x] = default_air
+    def remove_foreground_Dyn_Obj(self, pos : Vec) -> None:
+        c = self.get_Chunk_from_pos(pos)
+        pos = (pos - c.top_left_pos)// OBJ_SIZE
+        c.dyn_objects_foreground[pos.y][pos.x] = default_air
 
 def newChunk(pos:Vec,world:World) -> Chunk:
     return Chunk(pos,world)

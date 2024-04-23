@@ -63,12 +63,6 @@ def server_thread():
                 if i.type == py.KEYDOWN:
                     if i.key == K_SPACE:
                         players[0].chunk_border=not players[0].chunk_border
-                    elif i.key == K_i:
-                        players[0].speed+=2
-                    elif i.key == K_k:
-                        players[0].speed-=2
-                    elif i.key == K_RETURN:
-                        players[0].open_gui("Exec_command")
                     elif i.key == K_ASTERISK:
                         toggle_hitbox()
                     if i.key == K_LEFT:
@@ -83,46 +77,18 @@ def server_thread():
                         place_type +=1
                         if place_type == 5:
                             place_type = 0
-                        if place_type in (3, 4):
-                            obj_idx = min(len(Dynamic_Objs.keys()) - 1, obj_idx)
-                        else:
-                            obj_idx = min(len(Objs.keys()) - 1, obj_idx)
                     if i.key == K_UP:
                         place_type -=1
                         if place_type == -1:
                             place_type = 4
-                        if place_type in (3, 4):
-                            obj_idx = min(len(Dynamic_Objs.keys()) - 1, obj_idx)
-                        else:
-                            obj_idx = min(len(Objs.keys()) - 1, obj_idx)
                     if i.key == K_p:
-                        starting_world.add_Obj(Objs[list(Objs.keys())[obj_idx]],players[0].pos)
-                    if i.key == K_m:
-                        starting_world.add_background_Obj(Objs[list(Objs.keys())[obj_idx]],players[0].pos)
+                        place_obj(obj_idx, players[0].pos, place_type, starting_world)
                     if i.key == K_o:#delete obj att
-                        c=starting_world.get_Chunk_from_pos(players[0].pos)
-                        for k in c.objects:
-                            if k.pos == players[0].pos:
-                                c.objects.remove(k)
-                                break
-                    if i.key == K_l:#delete dyn_obj att
-                        c=starting_world.get_Chunk_from_pos(players[0].pos)
-                        for k in c.background_obj:
-                            if k.pos == players[0].pos:
-                                c.background_obj.remove(k)
-                                break
-                            
-                    if i.key == K_i:
-                        for j in range(4):
-                            for k in range(4):
-                                starting_world.add_Obj(Objs[list(Objs.keys())[obj_idx]](*tuple(players[0].pos + 50*Vec(j,k))))
-                    if i.key == K_k:
-                        for j in range(4):
-                            for k in range(4):
-                                starting_world.add_background_Obj(Objs[list(Objs.keys())[obj_idx]](*tuple(players[0].pos + 50*Vec(j,k))))
-
-
-
+                        remove_obj(players[0].pos, place_type, starting_world)
+                    if i.key == K_l:
+                        for x in range(4):
+                            for y in range(4):
+                                place_obj(obj_idx, players[0].pos + Vec(x, y) * TILE_SIZE, place_type, starting_world)
                 elif i.type ==py.KEYUP:
                     if i.key == py.K_LCTRL:
                         players[0].speed=0.5  
@@ -191,7 +157,7 @@ def main():
         screen.blit(arial.render(f"mid tps: {int(g_tps)}", False, (255, 0, 0)), (0, 30))
         screen.blit(arial.render(str(players[0].pos.floor()), False, (255, 0, 0)), (0, 60))
         screen.blit(arial.render(str(players[0].world.get_Chunk_from_pos(players[0].pos).pos), False, (255, 0, 0)), (0, 90))
-        screen.blit(arial.render(place_type_str[place_type], False, (255, 0, 0)), (0, 90))
+        screen.blit(arial.render(place_type_str[place_type], False, (255, 0, 0)), (0, 120))
 
         #draw crusor
         if cursor_cooldown:
@@ -255,8 +221,31 @@ starting_world.has_to_collide=True
 players.append(Character(0, 0, starting_world))
 players[0].is_world_editor = True
 obj_idx=0
+def place_obj(obj_idx : int, pos : Vec, place_type : int, w : World) -> None:
+    match place_type:
+        case 0:
+            w.add_background_Obj(Objs[list(Objs.keys())[obj_idx]](), pos)
+        case 1:
+            w.add_Obj(Objs[list(Objs.keys())[obj_idx]](), pos)
+        case 2:
+            w.add_foreground_Obj(Objs[list(Objs.keys())[obj_idx]](), pos)
+        case 3:
+            w.add_Dyn_Obj(Objs[list(Objs.keys())[obj_idx]](), pos)
+        case 4:
+            w.add_foreground_Dyn_Obj(Objs[list(Objs.keys())[obj_idx]](), pos)
 
-
+def remove_obj(pos : Vec, place_type : int, w : World) -> None:
+    match place_type:
+        case 0:
+            w.remove_background_Obj(pos)
+        case 1:
+            w.remove_Obj(pos)
+        case 2:
+            w.remove_foreground_Obj(pos)
+        case 3:
+            w.remove_Dyn_Obj(pos)
+        case 4:
+            w.remove_foreground_Dyn_Obj(pos)
 
 main()
 """
@@ -282,6 +271,5 @@ i pour faire un carre de 4x4 d'obj
 k pour faire un carre de 4x4 d'obj de background
     
 """
-
 
 

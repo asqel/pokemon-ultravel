@@ -21,40 +21,17 @@ class Obj:
         ...
     def on_draw(self,world,has_been_drawn, pos : Vec):
         ...
+    def on_tick(self, world, pos : Vec, players):
+        ...
     def obj_copy(self):
         return Obj(self.id,self.toplayer,self.texture,self.hitbox,self.data)
 
-class Dynamic_Obj:  #Object that can be updated on each tick
-    def __init__(self, id: str, istop: bool, texture: py.Surface, hitbox : bool = True, data:dict = None, light = None) -> None:
-        self.id = id
-        self.texture = texture
-        self.toplayer = istop # object is under or above player and entities
-        self.hitbox = hitbox
-        self.transparent=False #si on peut passer a travvers ou pas
-        self.data = ({} if data is None or not isinstance(data, dict) else data)
-        self.light = light
-    
-    def on_interact(self,world,user):
-        ...
-    def on_walk_in(self,world,user):
-        ...
-    def tick(self,world):
-        ...
-    def on_draw(self,world,has_been_drawn, pos : Vec):
-        ...
-    def dyn_obj_copy(self):
-        return Obj(self.id,self.toplayer,self.texture,self.hitbox,self.data)
 
-Objs={}
-Dynamic_Objs={}
+Objs : dict[str, Obj] = {}
 
 
 def registerObj(obj:type):
     Objs[obj.__name__]=obj
-    
-def registerDynamic_Obj(obj:type):
-    Dynamic_Objs[obj.__name__]=obj
-
 
 #import every objs
 module_names=os.listdir(os.path.dirname(os.path.abspath(__file__)))
@@ -77,10 +54,11 @@ class Grass(Obj):
     def __init__(self) -> None:
         super().__init__("Grass", 0, Textures["Obj"]["grass"+ str(randint(0, 4))])
 
-class Air(Dynamic_Obj):
+class Air(Obj):
     def __init__(self) -> None:
         super().__init__("Air", 0, NOTHING_TEXTURE, False)
 
+default_air = Air()
 
 class TEST(Obj):
     def __init__(self) -> None:
