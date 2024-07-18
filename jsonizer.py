@@ -3,105 +3,72 @@ from world import *
 from objs import *
 from uti import *
 from events import *
+from typing import TypedDict
 import os
 
-path=os.path.abspath(".")+"/worlds"
-dir_path =os.path.abspath(".")
+worlds_path = os.path.join(os.path.abspath("."), "worlds")
+template_path = os.path.join(os.path.abspath("."), "templates")
+dir_path = os.path.abspath(".")
 
-def save_vec(pos:Vec):
-    return (pos.x,pos.y)
+pk_dict = dict[str, 'pk_dict_value']
+pk_dict_value = str | int | float | bool | list | pk_dict
 
-def save_hitbox(hit:Hitbox):
-    return {
-        "type":hit.type,
-        "h":hit.height,
-        "w":hit.width,
-        "r":hit.radius,
-        "pos":save_vec(hit.pos) 
-    } if hit else None
+DO_TEMPLATE = False
 
-def save_Obj(o:Obj):
-    return {
-        "pos":save_vec(o.pos),
-        "data":o.data,
-        "hitbox":save_hitbox(o.hitbox),
-        "id":o.id,
-        "toplayer":o.toplayer,
-    }
-def save_chunk(c:"Chunk"):
-    return {
-        "background_obj":[save_Obj(i) for i in c.background_obj] ,   
-        "entities":[],
-        "hitboxes":[save_hitbox(i) for i in c.hitboxes],
-        "objects":[save_Obj(i) for i in c.objects],
-        "pos":save_vec(c.pos),
-        "top-left":save_vec(c.top_left_pos)
-    }
+def create_dir_ifn_exist(path: str) -> bool:
+    """
+    return false if it already exists true if it had to be created
+    """
+    if os.path.exists(path) and os.path.isdir(path):
+        return False
+    os.mkdir(path, exist_ok = True)
+    return True
 
+def create_file_ifn_exist(path: str) -> bool:
+    """
+    return false if it already exists true if it had to be created
+    """
+    if os.path.exists(path) and os.path.isfile(path):
+        return False
+    open(path, "x").close()
+    return True
 
-def save_world(w:"World"):
-    if not os.path.exists(f"./worlds/{w.name}"):
-        os.makedirs(f"./worlds/{w.name}")
-    if not os.path.isdir(f"./worlds/{w.name}"):
-        os.makedirs(f"./worlds/{w.name}")
-    for i in w.loaded_chunks.keys():
-        x ,y = i
-        with open(f"./worlds/{w.name}/c_{x}_{y}.json", "w+") as f:
-            json.dump(save_chunk(w.loaded_chunks[i]), f)
+def write_and_create_ifn_exist(path: str, text: str):
+    if not(os.path.exists(path) and os.path.isfile(path)):
+        f = open(path, "x")
+    else:
+        f = open(path, "w")
+    f.write(text)
+    f.close()
     
-def load_vec(d):
-    return Vec(d[0],d[1])
+    
 
-def load_hitbox(d):
-    return HITBOX_0x0 if d is None else Hitbox(d["type"],load_vec(d["pos"]),d["r"],d["w"],d["h"]) 
-        
-           
-def load_obj(d):
-    if d["id"] not in Objs.keys():
-        return None
-    x=Objs[d["id"]](d["pos"][0],d["pos"][1])
-    x.toplayer=d["toplayer"]
-    x.data=d["data"]
-    x.hitbox=load_hitbox(d["hitbox"])
-    return x
-         
+def create_world_save(world: World) -> None:
+    fullname = world.mod + '_SEP_' + world.name
+    path = os.path.join(worlds_path, fullname)
+    create_dir_ifn_exist(path)
+    create_file_ifn_exist(os.path.join(path, "info.json"))
+    create_file_ifn_exist(os.path.join(path, "data.json"))
+    create_dir_ifn_exist(os.path.join(path, "chunks"))
 
-def load_chunk(d,w):
-    import world as wo
-    c=wo.Chunk(load_vec(d["pos"]),w)    
-    for i in d["background_obj"]:
-        o = load_obj(i)
-        if o:
-            c.background_obj.append(o)
-    c.hitboxes=[load_hitbox(i) for i in d["hitboxes"]] 
-    for i in d["objects"]:
-        o = load_obj(i)
-        if o:
-            c.objects.append(o)
-    for i in d["Dyn_Obj"]:
-        o = load_Dyn_obj(i)
-        if o:
-            c.dyn_objects.append(o)
-    c.top_left_pos=load_vec(d["top-left"])
-    return c
+def save_chunk(world: World, chunk: Chunk):
+    fullname = world.mod + '_SEP_' + world.name
+    path = os.path.join(worlds_path, fullname, "chunks", f"c_{str(chunk.pos.x)}_{str(chunk.pos.y)}.json")
+    write_and_create_ifn_exist(path, json.dumps(chunk.to_dict()))
+ 
+def load_chunk(world: World, pos: Vec):
+    fullname = world.mod + '_SEP_' + world.name
+    path = os.path.join(worlds_path, fullname, "chunks", f"c_{str(pos.x)}_{str(pos.y)}.json")
+    return Chunk(pos, world)
+    
+    
 
-def load_world(name:str, mod = ""):
-    import world as wo
-    d={}
-    if mod != "":
-        with open(f"./mods/{mod}/worlds/{name}.json") as f:
-            d=json.load(f)
-    else : 
-        with open(f"{path}/{name}.json") as f:
-            d=json.load(f)
-    w=wo.World(name,d["background"])
-    w.chuncks={}
-    for i in d["chunks"].keys():
-        for k in d['chunks'][i].keys():
-            x=int(i)
-            y=int(k)
-            w.get_Chunk_at(Vec(x,y))
-            w.chuncks[x][y]=load_chunk(d["chunks"][i][k],w)#here i,k because str in json
-    for i in events[Event_on_world_load]:
-        i.function(players, w)
-    return w
+"""
+
+while playing chunks loaded are loaded and unloaded
+
+in worldeditor they are never unloaded except when saving
+
+//create a customizable class for world like objkects
+
+"""

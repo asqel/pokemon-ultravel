@@ -1,3 +1,4 @@
+import jsonizer as js
 from uti import *
 import pygame as py
 import os 
@@ -21,17 +22,31 @@ class Obj:
         ...
     def on_draw(self,world,has_been_drawn, pos : Vec):
         ...
-    def on_tick(self, world, pos : Vec, players):
+    def tick(self, world):
         ...
     def obj_copy(self):
         return Obj(self.id,self.toplayer,self.texture,self.hitbox,self.data)
+
+    def data_to_json(self) -> js.pk_dict:
+        keys = self.data.keys()
+        assert any(str != type(i) for i in keys)
+    
+    def to_dict(self) -> js.pk_dict:
+        return {"id": self.id, "data": self.data_to_json()}
+
+    def from_dict(self, obj_id: str, data: js.pk_dict) -> 'Obj':
+        res = Objs[obj_id]()
+        res.data = data
+        return res
+
+
 
 
 Objs : dict[str, Obj] = {}
 
 
 def registerObj(obj:type):
-    Objs[obj.__name__]=obj
+    Objs[obj.__name__] = obj
 
 #import every objs
 module_names=os.listdir(os.path.dirname(os.path.abspath(__file__)))
@@ -64,7 +79,7 @@ class TEST(Obj):
     def __init__(self) -> None:
         super().__init__("TEST", 0, Textures["Obj"]["pc"])
     def on_interact(self, world, user):
-        user.open_gui("combat_gui")
+        user.open_gui("fight_gui")
 registerObj(Grass)
 registerObj(Air)
 registerObj(TEST)

@@ -13,7 +13,6 @@ class Main_menu(Gui):
 		for i in events:
 			if i.type == py.KEYDOWN:
 				self.player.close_gui()
-				self.player.open_gui("Choose_name")
 			
 	def draw(self, screen : py.Surface):
 		screen.fill((0,0,0))

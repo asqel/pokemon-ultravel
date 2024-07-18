@@ -10,19 +10,21 @@ import jsonizer as js
 #in pixel (its a square)
 CHUNK_SIZE = 20 * TILE_SIZE
 show_hitbox = False
+# number of object in each direction in each chunk
+CHUNK_LEN = CHUNK_SIZE // OBJ_SIZE
 
 class Chunk:
     def __init__(self, chunk_pos : 'Vec', world : 'World') -> None:
         self.pos : Vec = chunk_pos # pos x,y in World:chuncks
         self.top_left_pos : Vec = chunk_pos * CHUNK_SIZE
         self.world :World = world
-        self.entities : list[Npc]=[]
+        self.entities : list[Npc] = []
         # [y][x]
-        self.background_obj : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.objects : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.dyn_objects : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
-        self.dyn_objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_SIZE // OBJ_SIZE)] for i in range(CHUNK_SIZE // OBJ_SIZE)]
+        self.background_obj : list[list[Obj]] = [[default_air for k in range(CHUNK_LEN)] for i in range(CHUNK_LEN)]
+        self.objects : list[list[Obj]] = [[default_air for k in range(CHUNK_LEN)] for i in range(CHUNK_LEN)]
+        self.objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_LEN)] for i in range(CHUNK_LEN)]
+        self.dyn_objects : list[list[Obj]] = [[default_air for k in range(CHUNK_LEN)] for i in range(CHUNK_LEN)]
+        self.dyn_objects_foreground : list[list[Obj]] = [[default_air for k in range(CHUNK_LEN)] for i in range(CHUNK_LEN)]
 
     def get_borders(self)->list['Vec']:
         """
@@ -48,6 +50,33 @@ class Chunk:
                 self.world.get_Chunk_at(new_pos).entities.append(self.entities.pop(p))
                 continue
             p += 1
+    def to_dict(self) -> dict:
+        res = {}
+        res["pos"] = [self.pos.x, self.pos.y]
+        res["top_left"] = [self.top_left_pos.x, self.top_left_pos.y]
+        res["background_obj"] = [[0 for i in range(CHUNK_LEN)] for k in range(CHUNK_LEN)]
+        res["objects"] = [[0 for i in range(CHUNK_LEN)] for k in range(CHUNK_LEN)]
+        res["objects_foreground"] = [[0 for i in range(CHUNK_LEN)] for k in range(CHUNK_LEN)]
+        res["dyn_objects"] = [[0 for i in range(CHUNK_LEN)] for k in range(CHUNK_LEN)]
+        res["dyn_objects_foreground"] = [[0 for i in range(CHUNK_LEN)] for k in range(CHUNK_LEN)]
+        for y in range(CHUNK_LEN):
+            for x in range(CHUNK_LEN):
+                if self.background_obj[y][x] != default_air:
+                    res["background_obj"] = self.background_obj[y][x].to_dict()
+
+                if self.objects[y][x] != default_air:
+                    res["objects"] = self.objects[y][x].to_dict()
+
+                if self.objects_foreground[y][x] != default_air:
+                    res["objects_foreground"] = self.objects_foreground[y][x].to_dict()
+
+                if self.dyn_objects[y][x] != default_air:
+                    res["dyn_objects"] = self.dyn_objects[y][x].to_dict()
+
+                if self.dyn_objects_foreground[y][x] != default_air:
+                    res["dyn_objects_foreground"] = self.dyn_objects_foreground[y][x].to_dict()
+
+
 
 
 class World:
@@ -225,7 +254,7 @@ class World:
         __fore_dyn_obj : list[tuple[int, int, Obj]] = []
         __players : list[Character] = [players[i] for i in range(1,len(players))]#get players except user
         __entities : list[Npc] = []
-        __chunks : list[Chunk] = []
+        __chunks : list[Chunk] = self.get_chunks_to_render(players[0].pos)
         x = (players[0].pos // CHUNK_SIZE).x
         y = (players[0].pos // CHUNK_SIZE).y
         
@@ -234,11 +263,6 @@ class World:
         new_texture = get_time_layout(players[0].tick_count, self.is_outside)
 
         screen.fill(self.bg)
-
-        #get chunks in render distance
-        for i in range(-players[0].render_distance // 2 + 1, players[0].render_distance // 2 + 1):
-            __chunks.extend(self.get_Chunk_at(Vec(x + i, y + k)) for k in range(-players[0].render_distance // 2 + 1, players[0].render_distance // 2 + 1))
-
 
 
         #get everythings form the chunks
@@ -426,9 +450,32 @@ class World:
                 py.draw.line(screen, (255, 0, 0), tuple(corn[2] + __offset), tuple(corn[3] + __offset))
                 py.draw.line(screen, (255, 0, 0), tuple(corn[0] + __offset), tuple(corn[2] + __offset))
                 py.draw.line(screen, (255, 0, 0), tuple(corn[1] + __offset), tuple(corn[3] + __offset))
+
+    def get_chunks_to_render(self, pos: Vec, is_worldeditor) -> list[Chunk]:
+        pos = pos / 1000
+        poses : list[Vec] = [0 for i in range(9)]
+        p = 0
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                poses[p] = pos + (x, y)
+                p += 1
+        if not is_worldeditor:
+            new_loaded = {}
+            for key in self.loaded_chunks.keys():
+                if key in poses:
+                    new_loaded[key] = self.loaded_chunks[key]
+                else:
+                    pass # send an event
+            for i in poses:
+                if i not in new_loaded.keys():
+                    
+
+
+
+
     def update(self) -> int :
         """
-        called each game tick so ~150 times a second
+        called each game tick so ~150 times a second (int theory)
         if world.has_to_collide is set to true the collision will be computed
         and has_to_collide will be set to false
         
@@ -442,7 +489,7 @@ class World:
         for i in range(-distance + 1, distance):
             for k in range(-distance + 1, distance):
                 chunks.append(self.get_Chunk_at((i, k) + chunk_pos))
-        
+
 
         for i in chunks:
             i.tick()
