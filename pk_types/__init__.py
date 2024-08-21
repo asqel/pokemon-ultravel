@@ -1,3 +1,27 @@
+PK_T_NORMAL = "normal"
+PK_T_FIRE = "fire"
+PK_T_WATER = "water"
+PK_T_ELECTRIC = "electric"
+PK_T_GRASS = "grass"
+PK_T_ICE = "ice"
+PK_T_FIGHTING = "fighting"
+PK_T_POISON = "poison"
+PK_T_GROUND = "ground"
+PK_T_FLYING = "flying"
+PK_T_PSYCHIC = "psychic"
+PK_T_BUG = "bug"
+PK_T_ROCK = "rock"
+PK_T_GHOST = "ghost"
+PK_T_DRAGON = "dragon"
+PK_T_DARK = "dark"
+PK_T_STELL = "steel"
+PK_T_FAIRY = "fairy"
+PK_T_LIGHT = "light"
+PK_T_ETHANOL = "ethanol"
+PK_T_SUGAR = "sugar"
+PK_T_PLASTIC = "plastic"
+
+
 TYPE_TABLE : dict[str, dict[str, int | float]] = {
 	"normal": {
 		"normal": 1,

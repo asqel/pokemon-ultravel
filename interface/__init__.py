@@ -57,5 +57,3 @@ for i in range(len(module_names)):
 
 for i in module_names:
     imp.import_module(f".{i}", __package__)
-
-print(guis)

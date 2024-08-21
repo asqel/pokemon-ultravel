@@ -4,23 +4,66 @@ from uti.hitbox import *
 import pygame as py
 import os 
 import importlib as imp
+from random import getrandbits
+
+STAT_HP = 0
+STAT_ATTACK = 1
+STAT_DEFENSE = 2
+STAT_SPE_DEFENSE = 3
+STAT_SPE_ATTACK = 4
+STAT_SPEED = 5
+
+def gen_IV():
+    n1 = getrandbits(16)
+    n2 = getrandbits(16)
+    stats = [0, 0, 0, 0, 0, 0]
+    stats[STAT_HP] = n1 & 31
+    stats[STAT_ATTACK] = (n1 >> 5) & 31
+    stats[STAT_DEFENSE] = (n1 >> 10) & 31
+    stats[STAT_SPE_DEFENSE] = n2 & 31
+    stats[STAT_SPE_ATTACK] = (n2 >> 5) & 31
+    stats[STAT_SPEED] = (n2 >> 10) & 31
+    return stats
 
 class Pokemon:
-    def __init__(self, name : str, surname : str, level : int) -> None:
-        self.name = name # species name
+    def __init__(self,
+                  pk_id : int,
+                  surname : str,
+                  level : int,
+                  types:tuple[str, str | None],
+                  nature : str,
+                  base_stats : list[float],
+                  genders : tuple[float, float] # male / female proba (0-1)
+
+                ) -> None:
+        self.pk_id = pk_id
         self.surname = surname # custom user name
         self.level = level
-        
+        self.nature = nature
+        self.types = types
+        self.base_stats = base_stats
+        self.genders = genders
+        self.iv = gen_IV()
+        self.ev = [0, 0, 0, 0, 0, 0]
 
-Pokemons = {}
-Pokemons_id : dict[str, tuple[int, str]]= {} # name : (dex_num, dex_type, class)
-
-
-def registerObj(pok : type, name : str, dex_num : int, dex_type : str):
-    Pokemons[pok.__name__] = pok
-    Pokemons_id[name] = (dex_num, dex_type, pok)
-
+    def get_max_hp(self) -> int:
+        return int(((2 * self.base_stats[STAT_HP] + self.iv[STAT_HP] + self.ev[STAT_HP] / 4 + 100) * self.level) / 100 + 10)
     
+    def get_stat(self, stat : int) -> int:
+        return int((((2*self.base_stats[stat] + self.iv[stat] + self.ev[stat]/4) * self.level) / 100 + 5) * self.get_nature_modif(stat))
+    
+    def get_nature_modif(self, stat : int) -> float:
+        return 1
+
+Pokemons_id : dict[int, tuple[str, Pokemon]]= {} # id:(species_name, class)
+
+# __init__(self, level : int, surname : str, gender : int)
+#   if gender == -1 it has to be randomly choosen
+#   0 : male / 1 : female | if gender requested doesnt exist for this species ignore it
+def registerObj(pk_id : int, species_name : str, pk_class : type):
+    Pokemons_id[pk_id] = (species_name, pk_class)
+
+
 
 
 #import every objs

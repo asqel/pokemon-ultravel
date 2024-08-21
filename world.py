@@ -243,6 +243,17 @@ class World:
         i.current_texture = item.texture
         self.add_entity(i)
 
+    def get_chunks_to_render(self, pos : Vec) -> list[Chunk]:
+        res = [None for i in range(9)]
+        res_end = 0
+        pos2 = pos // CHUNK_SIZE
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                res[res_end] = self.get_Chunk_at(pos2 + (x, y))
+                res_end += 1
+        return res
+
+
     def show(self, screen:pygame.Surface, zoom_out: int) -> None:
         """
         display everything that has to be rendered on the screen
@@ -451,28 +462,6 @@ class World:
                 py.draw.line(screen, (255, 0, 0), tuple(corn[0] + __offset), tuple(corn[2] + __offset))
                 py.draw.line(screen, (255, 0, 0), tuple(corn[1] + __offset), tuple(corn[3] + __offset))
 
-    def get_chunks_to_render(self, pos: Vec, is_worldeditor) -> list[Chunk]:
-        pos = pos / 1000
-        poses : list[Vec] = [0 for i in range(9)]
-        p = 0
-        for x in range(-1, 2):
-            for y in range(-1, 2):
-                poses[p] = pos + (x, y)
-                p += 1
-        if not is_worldeditor:
-            new_loaded = {}
-            for key in self.loaded_chunks.keys():
-                if key in poses:
-                    new_loaded[key] = self.loaded_chunks[key]
-                else:
-                    pass # send an event
-            for i in poses:
-                if i not in new_loaded.keys():
-                    
-
-
-
-
     def update(self) -> int :
         """
         called each game tick so ~150 times a second (int theory)
@@ -481,8 +470,6 @@ class World:
         
         if the player is dead(pv <=0) the function will return 1
         """
-        
-
         chunks : list[Chunk] = []
         distance =players[0].render_distance // 2 + 1
         chunk_pos = players[0].pos // CHUNK_SIZE

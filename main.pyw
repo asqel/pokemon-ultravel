@@ -209,7 +209,7 @@ def main():
         for i in events[Event_on_textures_load_t]:
             i.function(Textures)
 
-        starting_world = load_test_world()
+        starting_world = World("salut", [255, 255, 255])
         players.append(Character(TILE_SIZE * 2, 0, starting_world))
         players[0].pv = 100
 
@@ -291,14 +291,6 @@ def main():
         running_dict["global"] = True
         running_dict["server"] = True
 
-
-def load_test_world():
-    w = World("bedm",(125, 125, 125))
-    for i in range(20):
-        for k in range(10):
-            w.add_background_Obj(Objs["Grass"](), Vec(i*TILE_SIZE, k*TILE_SIZE))
-    w.add_Obj(Objs["TEST"](), Vec(-TILE_SIZE, -TILE_SIZE))
-    return w
 main()
 
 
@@ -311,19 +303,5 @@ new keys:
     interact / confirm
     cancel
     menu
-
-
-!TODO :
-    updater:
-        look on github a specifique fill downloads it an execute it
-        take current_version_update.py and execute it repeat until nor more update
-        ex:
-            game_version : 1.0.0
-            available : from_1.0.0.py, from_1.0.1.py, from_1.0.2.py
-            dl from_1.0.0.py executet it now game_version : 1.0.1
-            dl from_1.0.1.py execute it now game_version : 1.0.2
-
-
-
 
 """

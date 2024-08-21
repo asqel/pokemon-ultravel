@@ -29,24 +29,42 @@ class Obj:
 
     def data_to_json(self) -> js.pk_dict:
         keys = self.data.keys()
-        assert any(str != type(i) for i in keys)
+        assert len(keys) == 0 or any(str != type(i) for i in keys)
+        return self.data
     
     def to_dict(self) -> js.pk_dict:
         return {"id": self.id, "data": self.data_to_json()}
 
-    def from_dict(self, obj_id: str, data: js.pk_dict) -> 'Obj':
-        res = Objs[obj_id]()
-        res.data = data
-        return res
+    def from_dict(self, d : js.pk_dict) -> None:
+        self.data = d["data"]
 
 
 
 
 Objs : dict[str, Obj] = {}
 
+def register_simple_obj(id_ : str, texture : py.Surface):
+    registerObj(
+        type(
+            id_,
+            (Obj, ),
+            {
+                "__init__" : lambda self : super().__init__(id_, 0, texture)
+            }
+        )
+    )
 
 def registerObj(obj:type):
     Objs[obj.__name__] = obj
+
+class Air(Obj):
+    def __init__(self) -> None:
+        super().__init__("Air", 0, NOTHING_TEXTURE, False)
+
+
+default_air = Air()
+
+registerObj(Air)
 
 #import every objs
 module_names=os.listdir(os.path.dirname(os.path.abspath(__file__)))
@@ -63,26 +81,8 @@ for i in module_names:
     imp.import_module(f".{i}", __package__)
 
 
-from uti.textures import *
-from random import randint
-class Grass(Obj):
-    def __init__(self) -> None:
-        super().__init__("Grass", 0, Textures["Obj"]["grass"+ str(randint(0, 4))])
 
-class Air(Obj):
-    def __init__(self) -> None:
-        super().__init__("Air", 0, NOTHING_TEXTURE, False)
 
-default_air = Air()
-
-class TEST(Obj):
-    def __init__(self) -> None:
-        super().__init__("TEST", 0, Textures["Obj"]["pc"])
-    def on_interact(self, world, user):
-        user.open_gui("fight_gui")
-registerObj(Grass)
-registerObj(Air)
-registerObj(TEST)
 
 
 

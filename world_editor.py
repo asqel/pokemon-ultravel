@@ -97,7 +97,7 @@ def server_thread():
         
         if not players[0].guis:
             pushed_keys=py.key.get_pressed()
-            if pushed_keys[py.K_q] and not cooldown:
+            if pushed_keys[py.K_a] and not cooldown:
                 players[0].pos.x -= TILE_SIZE
                 cooldown=20
                 
@@ -105,19 +105,21 @@ def server_thread():
                 players[0].pos.x += TILE_SIZE
                 cooldown=20
                 
-            if pushed_keys[py.K_z] and not cooldown:
+            if pushed_keys[py.K_w] and not cooldown:
                 players[0].pos.y -= TILE_SIZE
                 cooldown=20
                 
-            if pushed_keys[py.K_s] and not cooldown:
+            if pushed_keys[py.K_s] and not cooldown and not pushed_keys[py.K_LCTRL]:
                 players[0].pos.y += TILE_SIZE
                 cooldown=20
             if cooldown:
                 cooldown-=1
             
             
-            if pushed_keys[py.K_LCTRL] and pushed_keys[py.K_s]:
+            if pushed_keys[py.K_LCTRL] and pushed_keys[py.K_s] and not cooldown:
+                cooldown = 50
                 js.save_world(starting_world)
+                print("world have been saved")
 
         # tps moyenizer
         moy_fps = 1 / (time() - loop_start) * loop_count if loop_count > 10 else TPS_MAX
@@ -206,12 +208,10 @@ import os
 if MOD_ENABLED:
         import modloader as md
         md.load_mods()
-world_name=input("entrez le nom du monde : ")
-if not os.path.exists(f"./worlds/{world_name}"):
+world_name = input("entrez le nom du monde : ")
+if not js.world_exists(world_name, ""):
     print("le monde nexiste pas et vas etre creer")
-    starting_world=World(world_name,(0,0,0))
-else:
-    starting_world = World(world_name, (0,0,0))
+starting_world = World(world_name, (0,0,0))
 
 
 starting_world.has_to_collide=True

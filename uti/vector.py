@@ -110,9 +110,6 @@ class Vec:
             return(Vec(self.x//other,self.y//other))
         return NotImplemented
     
-    def __str__(self):
-        return str((self.x,self.y))
-    
     def len(self)->float:
         """
         return the length of the Vector

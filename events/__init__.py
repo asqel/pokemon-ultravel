@@ -16,6 +16,7 @@ Event_on_draw_t = __next_event()
 Event_on_textures_load_t = __next_event()
 Event_on_chunk_generate = __next_event()
 Event_on_world_load = __next_event()
+Event_on_world_unload = __next_event()
 Event_on_player_drop_item = __next_event()
 
 Event_max_t = __next_event()
@@ -47,6 +48,9 @@ type of event :
         function : (players : list[Character], chunk : Chunk)
 
     Event_on_world_load:
+        function : (players : list[Character], world)
+    
+    Event_on_world_unload:
         function : (players : list[Character], world)
     
     Event_on_player_drop_item:

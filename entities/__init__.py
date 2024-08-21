@@ -5,6 +5,7 @@ from uti.textures import *
 from interface import *
 from items import *
 import pygame as py
+from events import *
 
 class Character:
     def __init__(self, x : float, y : float, world):
@@ -26,7 +27,7 @@ class Character:
         self.speed = 3 # px / tick
         self.isvisible=True
         self.render_distance=3
-        self.world = world
+        self.change_world(world)
         self.chunk_border = False
         self.riding : Npc = None # entity wich the player is riding
         self.zoom_out = 1
@@ -110,35 +111,14 @@ class Character:
         if self.guis:
             self.guis.pop(-1)
     
-    def has_quest(self, _id : str):
-        return _id in self.quests.keys() or _id in self.quests_completed.keys()
-    
-    def has_quest_done(self, _id : str):
-        return _id in self.quests_completed.keys()
+    def change_world(self, world):
+        if world is not None:
+            for i in events[Event_on_world_unload]:
+                i.function(players, self.world)
+            self.world = world
+        for i in events[Event_on_world_load]:
+            i.function(players, world)
 
-    def has_quest_incompleted(self, _id : str):
-        return _id in self.quests.keys()
-
-    def add_quest(self, _id : str, quest : Quest):
-        self.quests[_id] = quest
-
-    def add_quest_completed(self, _id : str, quest : Quest):
-        self.quests_completed[_id] = quest
-
-    def get_quest(self, _id : str):
-        if _id in self.quests.keys():
-            return self.quests[_id]
-        return None
-
-    def get_quest_completed(self, _id : str):
-        if _id in self.quests_completed.keys():
-            return self.quests_completed[_id]
-        return None
-
-    def complete_quest(self, _id):
-        if _id in self.quests.keys():
-            self.quests_completed[_id] = self.quests[_id]
-            self.quests.pop(_id)
 class Npc:
     def __init__(self,name:str,surname:str,texture:py.Surface,spells,pos:Vec,texture_pos:Vec=NULL_VEC,hitbox:Hitbox=HITBOX_60X60,action=None,tick=None) -> None:
         self.name=name
