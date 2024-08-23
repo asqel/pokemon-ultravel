@@ -74,6 +74,7 @@ def save_world(world : 'wo.World'):
         chunk_path = os.path.join(path, f"c_{i[0]}_{i[1]}.json")
         create_file_ifn_exist(chunk_path)
         with open(chunk_path, "w") as f:
+            print(chunk_to_json(world.loaded_chunks[i]))
             json.dump(chunk_to_json(world.loaded_chunks[i]), f, separators=(',', ':'))
 
 

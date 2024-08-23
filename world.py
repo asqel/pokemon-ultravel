@@ -295,9 +295,9 @@ class World:
                 p = (i[0], i[1]) + __offset
                 if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                     screen.blit(i[2].texture,tuple(p))
-                    i[2].on_draw(self,True, Vec(i[0], i[1]))
+                    i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                 else:
-                    i[2].on_draw(self,False, Vec(i[0], i[1]))
+                    i[2].on_draw(self,False, Vec(i[0], i[1]), p)
        #
         #draw objects that are not toplayer
         for i in __objects:
@@ -306,9 +306,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -320,9 +320,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -334,9 +334,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -347,16 +347,16 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
                             new_texture.blit(i[2].light.texture,tuple(p))
 
         #draw user
-        if players[0].isvisible:
+        if players[0].isvisible and not players[0].is_world_editor:
             if not players[0].riding:
                 p = players[0].pos + __offset
                 screen.blit(players[0].current_texture, tuple(p))
@@ -381,9 +381,9 @@ class World:
             p = i.pos + __offset
             if -i.current_texture.get_width() <= p.x < scr_w and -i.current_texture.get_height() <= p.y < scr_h:
                 screen.blit(i.current_texture, tuple(p + i.texture_pos))
-                i.on_draw(self, True, Vec(i[0], i[1]))
+                i.on_draw(self, True, Vec(i[0], i[1]), p)
             else:
-                i.on_draw(self, False, Vec(i[0], i[1]))
+                i.on_draw(self, False, Vec(i[0], i[1]), p)
 
         #draw objects that are toplayer
         for i in __objects:
@@ -392,9 +392,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -406,9 +406,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -420,9 +420,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:
@@ -433,9 +433,9 @@ class World:
                     p = (i[0], i[1]) + __offset
                     if -i[2].texture.get_width() <= p.x < scr_w and -i[2].texture.get_height() <= p.y < scr_h:
                         screen.blit(i[2].texture,tuple(p))
-                        i[2].on_draw(self,True, Vec(i[0], i[1]))
+                        i[2].on_draw(self,True, Vec(i[0], i[1]), p)
                     else:
-                        i[2].on_draw(self,False, Vec(i[0], i[1]))
+                        i[2].on_draw(self,False, Vec(i[0], i[1]), p)
                     if i[2].light:
                         p = i[2].light.pos + __offset + (i[0], i[1])
                         if -i[2].light.texture.get_width() <= p.x < scr_w and -i[2].light.texture.get_height() <= p.y < scr_h:

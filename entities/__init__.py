@@ -68,8 +68,9 @@ class Character:
             else:
                 self.pos.x += self.speed
                 self.next_frame(1)
-            if int(self.pos.x) % TILE_SIZE == int(self.pos.y) % TILE_SIZE == 0:
+            if int(self.pos.x) % TILE_SIZE == 0 and int(self.pos.y) % TILE_SIZE == 0:
                 self.is_moving = 0
+                self.has_changed_dir = 0
         else:
             if self.dir == "d":
                 self.current_texture = self.frames[2][0]
@@ -79,15 +80,25 @@ class Character:
                 self.current_texture = self.frames[3][0]
             else:
                 self.current_texture = self.frames[1][0]
-    
+    def can_change_speed(self):
+        return int(self.pos.x) % TILE_SIZE == 0 and int(self.pos.y) % TILE_SIZE == 0
     def move_dir(self, dir : str):
-        if self.has_changed_dir:
+        if self.dir != dir and self.can_change_speed():
+            self.has_changed_dir = -15
+            self.dir = dir
+            if self.dir == "d":
+                self.current_texture = self.frames[2][0]
+            elif self.dir == "u":
+                self.current_texture = self.frames[0][0]
+            elif self.dir == "l":
+                self.current_texture = self.frames[3][0]
+            else:
+                self.current_texture = self.frames[1][0]
+        if self.has_changed_dir > 0:
             self.has_changed_dir -= 1
-        if not self.is_moving and not self.has_changed_dir:
-            if self.dir != dir:
-                self.dir = dir
-                self.has_changed_dir = 15
-                return 
+        if not self.is_moving and 0 >= self.has_changed_dir:
+            if self.has_changed_dir < 0:
+                self.has_changed_dir = -self.has_changed_dir
             self.dir = dir
             if self.dir == "d":
                 if self.world.can_move_to(self, self.pos + (0, TILE_SIZE)):

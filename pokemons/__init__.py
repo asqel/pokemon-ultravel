@@ -27,14 +27,15 @@ def gen_IV():
 
 class Pokemon:
     def __init__(self,
-                  pk_id : int,
-                  surname : str,
-                  level : int,
-                  types:tuple[str, str | None],
-                  nature : str,
-                  base_stats : list[float],
-                  genders : tuple[float, float] # male / female proba (0-1)
-
+                    pk_id : int,
+                    surname : str,
+                    level : int,
+                    types:tuple[str, str | None],
+                    nature : str,
+                    base_stats : list[float],
+                    genders : tuple[float, float], # male / female proba (0-1)
+                    sprites : tuple[py.Surface, py.Surface], # sprite normal / shiny
+                    shiny : bool
                 ) -> None:
         self.pk_id = pk_id
         self.surname = surname # custom user name
@@ -45,6 +46,8 @@ class Pokemon:
         self.genders = genders
         self.iv = gen_IV()
         self.ev = [0, 0, 0, 0, 0, 0]
+        self.sprites = sprites
+        self.shiny = shiny
 
     def get_max_hp(self) -> int:
         return int(((2 * self.base_stats[STAT_HP] + self.iv[STAT_HP] + self.ev[STAT_HP] / 4 + 100) * self.level) / 100 + 10)
@@ -55,9 +58,15 @@ class Pokemon:
     def get_nature_modif(self, stat : int) -> float:
         return 1
 
+    def get_sprite(self):
+        if self.shiny:
+            return self.sprites[1]
+        return self.sprites[0]
+    
+
 Pokemons_id : dict[int, tuple[str, Pokemon]]= {} # id:(species_name, class)
 
-# __init__(self, level : int, surname : str, gender : int)
+# __init__(self, level : int, surname : str, gender : int, shiny : bool)
 #   if gender == -1 it has to be randomly choosen
 #   0 : male / 1 : female | if gender requested doesnt exist for this species ignore it
 def registerObj(pk_id : int, species_name : str, pk_class : type):

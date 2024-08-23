@@ -16,11 +16,11 @@ class Obj:
         self.data = ({} if data is None or not isinstance(data, dict) else data)
         self.light = light
     
-    def on_interact(self,world,user):
+    def on_interact(self, world, user):
         ...
-    def on_walk_in(self,world,user):
+    def on_walk_in(self, world, user):
         ...
-    def on_draw(self,world,has_been_drawn, pos : Vec):
+    def on_draw(self, world, has_been_drawn, pos : Vec, screen_pos :Vec):
         ...
     def tick(self, world):
         ...
@@ -49,7 +49,7 @@ def register_simple_obj(id_ : str, texture : py.Surface):
             id_,
             (Obj, ),
             {
-                "__init__" : lambda self : super().__init__(id_, 0, texture)
+                "__init__" : lambda self : super(self.__class__, self).__init__(id_, 0, texture)
             }
         )
     )

@@ -37,17 +37,37 @@ running_dict = {
 
 pygame_events=[]
 
+is_sprint_pressed = 0
+
 def check_keys():
     global screen
     global pygame_events
     global key_map
+    global is_sprint_pressed
+
     for i in pygame_events:
         if i.type == py.MOUSEBUTTONDOWN:
             if (1,i.button) == key_map[t_sprint]:
-                print(players[0].world.get_Chunk_from_pos(players[0].pos).objects)
-                if not players[0].is_moving:
-                    players[0].speed = 5
-            elif (1,i.button) == K_ESCAPE:
+                is_sprint_pressed = 1
+        elif i.type == py.MOUSEBUTTONUP:
+            if (1, i.button) == key_map[t_sprint]:
+                is_sprint_pressed = 0
+        elif i.type == py.KEYDOWN:
+            if i.key == key_map[t_sprint]:
+                is_sprint_pressed = 1
+        elif i.type == py.KEYUP:
+            if i.key == key_map[t_sprint]:
+                is_sprint_pressed = 0
+
+    if is_sprint_pressed:
+        if players[0].can_change_speed():
+            players[0].speed = 5
+    else:
+        if players[0].can_change_speed():
+            players[0].speed = 2
+    for i in pygame_events:
+        if i.type == py.MOUSEBUTTONDOWN:
+            if (1,i.button) == K_ESCAPE:
                 players[0].open_gui("Escape_gui")
             elif (1,i.button) == key_map[t_use_object]:
                 if not players[0].guis:
@@ -67,18 +87,13 @@ def check_keys():
                         players[0].world.get_Obj(players[0].pos+(-10,TILE_SIZE/2)).on_interact(players[0].world,players[0])
                         players[0].world.get_dyn_Obj(players[0].pos+(-10,TILE_SIZE/2)).on_interact(players[0].world,players[0])
 
-        elif i.type == py.MOUSEBUTTONUP:
-            if (1, i.button) == key_map[t_sprint]:
-                if not players[0].is_moving:
-                    players[0].speed = 2 
         elif i.type == py.KEYDOWN:
             if i.key == K_F3:
                 players[0].chunk_border = not players[0].chunk_border
             elif i.key == K_ASTERISK:
                 toggle_hitbox()
             elif i.key == key_map[t_sprint]:
-                if not players[0].is_moving:
-                    players[0].speed = 5
+                is_sprint_pressed = 1
             elif i.key == key_map[t_use_object]:
                 if not players[0].guis:
                     if players[0].dir == 'u':
@@ -96,12 +111,6 @@ def check_keys():
                     if players[0].dir == 'l':
                         players[0].world.get_Obj(players[0].pos+(-10,25)).on_interact(players[0].world,players[0])
                         players[0].world.get_dyn_Obj(players[0].pos+(-10,25)).on_interact(players[0].world,players[0])
-
-        elif i.type == py.KEYUP:
-            if i.key == key_map[t_sprint]:
-                if not players[0].is_moving:
-                    players[0].speed = 2 
-
 
 def do_signals() -> None:
     while sig.SIGNALS:
@@ -167,7 +176,7 @@ def server_thread():
                 elif pushed_keys[key_map[t_mov_down]]:
                     players[0].riding.move_dir("d")
                 else:
-                    players[0].has_changed_dir = 15
+                    players[0].has_changed_dir = 0
                 
         if not players[0].guis:
             players[0].world.update()
@@ -209,7 +218,7 @@ def main():
         for i in events[Event_on_textures_load_t]:
             i.function(Textures)
 
-        starting_world = World("salut", [255, 255, 255])
+        starting_world = World("starting", [255, 255, 255])
         players.append(Character(TILE_SIZE * 2, 0, starting_world))
         players[0].pv = 100
 
