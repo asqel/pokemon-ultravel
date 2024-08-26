@@ -16,6 +16,8 @@ class fight_gui(Gui):
 		self.enemy_pk_idx = 0
 		self.player_pk_sprite_resize = None
 		self.player_pk_sprite = None
+		self.player_pk_transparency = 255.0
+		self.black_fade = 255
 
 	def tick(self, events: list[py.event.Event]):
 		for i in events:
@@ -57,7 +59,15 @@ class fight_gui(Gui):
 				screen.blit(text, (base_x + k*165, base_y + i*80))
 				texts_idx += 1
 
-		self.draw_player_pokemon()
+
+		if self.black_fade > 0:
+			s = py.Surface((screen.get_width(), screen.get_height()), py.SRCALPHA).convert_alpha()
+			s.fill((0, 0, 0))
+			s.set_alpha(self.black_fade)
+			screen.blit(s, (0, 0))
+			self.black_fade -= 3
+		else:
+			self.draw_player_pokemon()
 	
 	def draw_player_pokemon(self):
 		pk : Pokemon = self.player.team[self.player_pk_idx]
@@ -66,8 +76,14 @@ class fight_gui(Gui):
 		else:
 			screen.blit(main_font_40.render(pk.surname, 0, 0x0), (615, 285))
 		screen.blit(main_font_40.render(f"Lv {pk.level:03}".replace("0", " "), 0, 0x0), (760, 331))
-		screen.blit(py.transform.flip(pk.get_sprite(), 1, 0), (70, 160))
-
+		if self.player_pk_transparency > 0:
+			s = py.transform.flip(pk.get_sprite().copy(), 1, 0)
+			s.fill((int(self.player_pk_transparency), int(self.player_pk_transparency), int(self.player_pk_transparency)), special_flags = py.BLEND_RGB_ADD)
+			screen.blit(s, (70, 160))
+			self.player_pk_transparency -= 8
+			print(self.player_pk_transparency)
+		else:
+			screen.blit(py.transform.flip(pk.get_sprite(), 1, 0), (70, 160))
 
 registerGui(fight_gui)
 
