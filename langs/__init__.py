@@ -1,6 +1,7 @@
 
 import os
 import importlib as imp
+import json
 
 
 langs = [
@@ -21,7 +22,7 @@ def register_text(lang : str, category : str, name : str, text : str):
 		register_lang(lang)
 	if category not in texts[lang]:
 		texts[lang][category] = {}
-	text[lang][category][name] = text
+	texts[lang][category][name] = text
 
 def get_text(lang : str, category : str, name : str) -> str:
 	if lang not in langs:
@@ -32,15 +33,20 @@ def get_text(lang : str, category : str, name : str) -> str:
 		return ""
 	return texts[lang][category][name]
 
-module_names=os.listdir(os.path.dirname(os.path.abspath(__file__)))
 
-for i in range(len(module_names)):
-    if module_names[i] == "__init__.py":
-        module_names.pop(i)
-        break
-for i in range(len(module_names)):
-    if module_names[i].endswith(".py"):
-        module_names[i] = module_names[i][: -3]
+def register_builtin():
+	fold = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	fold = os.path.join(fold, "assets", "lang")
+	for lang in os.listdir(fold):
+		register_lang(lang)
+		lang_path = os.path.join(fold, lang)
+		for category in os.listdir(os.path.join(lang_path)):
+			category_path = os.path.join(lang_path, category)
+			for file in os.listdir(category_path):
+				with open(os.path.join(category_path, file), encoding='utf-8') as f:
+					d = json.load(f)
+					for i in d.keys():
+						register_text(lang, category, i, d[i])
 
-for i in module_names:
-    imp.import_module(f".{i}", __package__)
+register_builtin()
+print(texts)

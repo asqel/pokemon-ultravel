@@ -17,10 +17,8 @@ PK_T_DARK = "dark"
 PK_T_STELL = "steel"
 PK_T_FAIRY = "fairy"
 PK_T_LIGHT = "light"
-PK_T_ETHANOL = "ethanol"
 PK_T_SUGAR = "sugar"
 PK_T_PLASTIC = "plastic"
-
 
 TYPE_TABLE : dict[str, dict[str, int | float]] = {
 	"normal": {
@@ -43,7 +41,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0.5,
 		"fairy" : 1,
 		"light" : 0,
-		"ethanol" : 0,
 		"sugar" : 0.5,
 		"plastic" : 2
 	},
@@ -65,11 +62,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 0.5,
 		"dark": 1,
 		"steel": 2,
-	"fairy" : 1,
-	"light" : 0,
-	"ethanol" : 2,
-	"sugar" : 2,
-	"plastic" : 2
+		"fairy" : 1,
+		"light" : 0,
+		"sugar" : 2,
+		"plastic" : 2
 	},
 	"water": {
 		"normal": 1,
@@ -89,11 +85,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 0.5,
 		"dark": 1,
 		"steel": 1,
-	"fairy" : 1,
-	"light" : 1,
-	"ethanol" : 1,
-	"sugar" : 0.5,
-	"plastic" : 0.5
+		"fairy" : 1,
+		"light" : 1,
+		"sugar" : 0.5,
+		"plastic" : 0.5
 	},
 	"electric": {
 		"normal": 1,
@@ -113,11 +108,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 0.5,
 		"dark": 1,
 		"steel": 1,
-	"fairy" : 1,
-	"light" : 1,
-	"ethanol" : 1,
-	"sugar" : 1,
-	"plastic" : 0
+		"fairy" : 1,
+		"light" : 1,
+		"sugar" : 1,
+		"plastic" : 0
 	},
 	"grass": {
 		"normal": 1,
@@ -137,11 +131,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 0.5,
 		"dark": 1,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 2,
-	"ethanol" : 0,
-	"sugar" : 1,
-	"plastic" : 0.5
+		"fairy" : 1,
+		"light" : 2,
+		"sugar" : 1,
+		"plastic" : 0.5
 	},
 	"ice": {
 		"normal": 1,
@@ -161,11 +154,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 2,
 		"dark": 1,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 0.5,
-	"ethanol" : 2,
-	"sugar" : 1,
-	"plastic" : 1
+		"fairy" : 1,
+		"light" : 0.5,
+		"sugar" : 1,
+		"plastic" : 1
 	},
 	"fighting": {
 		"normal": 2,
@@ -185,11 +177,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 2,
 		"steel": 2,
-	"fairy" : 0.5,
-	"light" : 0.5,
-	"ethanol" : 0.5,
-	"sugar" : 1,
-	"plastic" : 1
+		"fairy" : 0.5,
+		"light" : 0.5,
+		"sugar" : 1,
+		"plastic" : 1
 	},
 	"poison": {
 		"normal": 1,
@@ -209,11 +200,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 1,
 		"steel": 0,
-	"fairy" : 2,
-	"light" : 1,
-	"ethanol" : 0.5,
-	"sugar" : 2,
-	"plastic" : 1
+		"fairy" : 2,
+		"light" : 1,
+		"sugar" : 2,
+		"plastic" : 1
 	},
 	"ground": {
 		"normal": 1,
@@ -233,15 +223,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 1,
 		"steel": 2,
-	"fairy" : 1,
-	"light" : 0.5,
-	"ethanol" : 1,
-	"sugar" : 2,
-	"plastic" : 0.5,
-	"light" : 1,
-	"ethanol" : 1,
-	"sugar" : 1,
-	"plastic" : 1
+		"fairy" : 1,
+		"light" : 1,
+		"sugar" : 2,
+		"plastic" : 1
 	},
 	"flying": {
 		"normal": 1,
@@ -261,11 +246,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 1,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 0.5,
-	"ethanol" : 0.5,
-	"sugar" : 1,
-	"plastic" : 1
+		"fairy" : 1,
+		"light" : 0.5,
+		"sugar" : 1,
+		"plastic" : 1
 	},
 	"psychic": {
 		"normal": 1,
@@ -285,11 +269,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 0,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 0.5,
-	"ethanol" : 0.5,
-	"sugar" : 0.5,
-	"plastic" : 2
+		"fairy" : 1,
+		"light" : 0.5,
+		"sugar" : 0.5,
+		"plastic" : 2
 	},
 	"bug": {
 		"normal": 1,
@@ -309,11 +292,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 2,
 		"steel": 0.5,
-	"fairy" : 0.5,
-	"light" : 0.5,
-	"ethanol" : 0.5,
-	"sugar" : 1,
-	"plastic" : 0.5
+		"fairy" : 0.5,
+		"light" : 0.5,
+		"sugar" : 1,
+		"plastic" : 0.5
 	},
 	"rock": {
 		"normal": 1,
@@ -333,11 +315,10 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"dragon": 1,
 		"dark": 1,
 		"steel": 0.5,
-	"fairy" : 1,
-	"light" : 1,
-	"ethanol" : 1,
-	"sugar" : 1,
-	"plastic" : 1
+		"fairy" : 1,
+		"light" : 1,
+		"sugar" : 1,
+		"plastic" : 1
 	},
 	"ghost": {
 		"normal": 0,
@@ -359,7 +340,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 1,
 		"fairy" : 1,
 		"light" : 0,
-		"ethanol" : 1,
 		"sugar" : 2,
 		"plastic" : 1
 	},
@@ -383,7 +363,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0.5,
 		"fairy" : 0,
 		"light" : 0.5,
-		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 1
 	},
@@ -404,10 +383,9 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"ghost": 2,
 		"dragon": 1,
 		"dark": 0.5,
-		"steel": 0.5,
+		"steel": 1,
 		"fairy" : 0.5,
 		"light" : 2,
-		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 1
 	},
@@ -431,7 +409,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0.5,
 		"fairy": 2,
 		"light" : 2,
-		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 2
 	},
@@ -455,33 +432,8 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0.5,
 		"fairy" : 1,
 		"light" : 1,
-		"ethanol" : 0.5,
 		"sugar" : 0.5,
 		"plastic" : 0.5
-	},
-	"ethanol" : {
-		"normal": 1,
-		"fire": 0,
-		"water": 1,
-		"electric": 1,
-		"grass": 2,
-		"ice": 0.5,
-		"fighting": 1,
-		"poison": 0,
-		"ground": 2,
-		"flying": 2,
-		"psychic": 2,
-		"bug": 1,
-		"rock": 1,
-		"ghost": 0,
-		"dragon": 1,
-		"dark": 0.5,
-		"steel": 0,
-		"fairy" : 2,
-		"light" : 1,
-		"ethanol" : 1,
-		"sugar" : 1,
-		"plastic" : 1
 	},
 	"sugar": {
 		"normal": 2,
@@ -503,7 +455,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0,
 		"fairy" : 2,
 		"light" : 0.5,
-		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 0
 	},
@@ -527,7 +478,6 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 1,
 		"fairy" : 1,
 		"light" : 0.5,
-		"ethanol" : 1,
 		"sugar" : 1,
 		"plastic" : 1
 	},
@@ -535,7 +485,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"normal": 1,
 		"fire": 0.5,
 		"water": 2,
-		"electric": 0,
+		"electric": 2,
 		"grass": 2,
 		"ice": 0.5,
 		"fighting": 1,
@@ -551,9 +501,8 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"steel": 0.5,
 		"fairy" : 1,
 		"light" : 0.5,
-		"ethanol" : 1,
 		"sugar" : 1,
-		"plastic" : 2
+		"plastic" : 0.5
 	}
 }
 TYPES = [
@@ -576,22 +525,9 @@ TYPES = [
 	"steel",
 	"fairy",
 	"light",
-	"ethanol",
 	"sugar",
 	"plastic"
 ]
-
-def get_type_mult2(type1, type2) -> float | int:
-	if type1 in TYPES and type2 in TYPES:
-		return TYPE_TABLE[type1][type2]
-	return 1
-
-def get_type_mult3(type1, type2, type3) -> float | int:
-	if type1 in TYPES and type2 in TYPES and type3 in TYPES:
-		return TYPE_TABLE[type1][type2] * TYPE_TABLE[type1][type2]
-	return 1
-
-
 
 def get_weakness(type1 : str):
 	res = {}
@@ -607,11 +543,19 @@ def get_weakness2(type1, type2):
 		res[i] = r1[i] * r2[i]
 	return res
 
-def print_weak(d):
-	for i in TYPES:
-		print(f"	{i}{' ' *( 10 - len(i))}: {d[i]}")
+def get_type_mult(attack, target):
+	return TYPE_TABLE[attack][target]
+
+def get_type_mult2(attack, target1, target2):
+	return get_type_mult(attack, target1) * get_type_mult(attack, target2)
+
+
+
 if __name__ == "__main__":
-	t1 = "psychic"
-	t2 = "sugar"
+	t1 = PK_T_FIRE
+	t2 = PK_T_FIGHTING
 	print(f"{t1} / {t2}")
-	print_weak(get_weakness2(t1, t2))
+	d = get_weakness2(t1, t2)
+	for i in d.keys():
+		if d[i] != 1:
+			print(f"{i}: {d[i]}")

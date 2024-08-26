@@ -38,26 +38,39 @@ running_dict = {
 pygame_events=[]
 
 is_sprint_pressed = 0
+is_stay_pressed = 0
 
 def check_keys():
     global screen
     global pygame_events
     global key_map
     global is_sprint_pressed
+    global is_stay_pressed
 
     for i in pygame_events:
         if i.type == py.MOUSEBUTTONDOWN:
             if (1,i.button) == key_map[t_sprint]:
                 is_sprint_pressed = 1
+            elif (1,i.button) == key_map[t_stay]:
+                is_stay_pressed = 1
+
         elif i.type == py.MOUSEBUTTONUP:
             if (1, i.button) == key_map[t_sprint]:
                 is_sprint_pressed = 0
+            if (1, i.button) == key_map[t_stay]:
+                is_stay_pressed = 0
+
         elif i.type == py.KEYDOWN:
             if i.key == key_map[t_sprint]:
                 is_sprint_pressed = 1
+            elif i.key == key_map[t_stay]:
+                is_stay_pressed = 1
+
         elif i.type == py.KEYUP:
             if i.key == key_map[t_sprint]:
                 is_sprint_pressed = 0
+            elif i.key == key_map[t_stay]:
+                is_stay_pressed = 0
 
     if is_sprint_pressed:
         if players[0].can_change_speed():
@@ -155,28 +168,52 @@ def server_thread():
             
         pushed_keys=py.key.get_pressed()
         if not players[0].guis:
-            if not players[0].riding:
-                if pushed_keys[key_map[t_mov_left]]:
-                    players[0].move_dir("l")
-                elif pushed_keys[key_map[t_mov_up]]:
-                    players[0].move_dir("u")
-                elif pushed_keys[key_map[t_mov_right]]:
-                    players[0].move_dir("r")
-                elif pushed_keys[key_map[t_mov_down]]:
-                    players[0].move_dir("d")
+            if not is_stay_pressed:
+                if not players[0].riding:
+                    if pushed_keys[key_map[t_mov_left]]:
+                        players[0].move_dir("l")
+                    elif pushed_keys[key_map[t_mov_up]]:
+                        players[0].move_dir("u")
+                    elif pushed_keys[key_map[t_mov_right]]:
+                        players[0].move_dir("r")
+                    elif pushed_keys[key_map[t_mov_down]]:
+                        players[0].move_dir("d")
+                    else:
+                        players[0].has_changed_dir = 0
                 else:
-                    players[0].has_changed_dir = 0
+                    if pushed_keys[key_map[t_mov_left]]:
+                        players[0].riding.move_dir("l")
+                    elif pushed_keys[key_map[t_mov_up]]:
+                        players[0].riding.move_dir("u")
+                    elif pushed_keys[key_map[t_mov_right]]:
+                        players[0].riding.move_dir("r")
+                    elif pushed_keys[key_map[t_mov_down]]:
+                        players[0].riding.move_dir("d")
+                    else:
+                        players[0].has_changed_dir = 0
             else:
-                if pushed_keys[key_map[t_mov_left]]:
-                    players[0].riding.move_dir("l")
-                elif pushed_keys[key_map[t_mov_up]]:
-                    players[0].riding.move_dir("u")
-                elif pushed_keys[key_map[t_mov_right]]:
-                    players[0].riding.move_dir("r")
-                elif pushed_keys[key_map[t_mov_down]]:
-                    players[0].riding.move_dir("d")
+                if not players[0].riding:
+                    if pushed_keys[key_map[t_mov_left]]:
+                        players[0].change_dir("l")
+                    elif pushed_keys[key_map[t_mov_up]]:
+                        players[0].change_dir("u")
+                    elif pushed_keys[key_map[t_mov_right]]:
+                        players[0].change_dir("r")
+                    elif pushed_keys[key_map[t_mov_down]]:
+                        players[0].change_dir("d")
+                    else:
+                        players[0].has_changed_dir = 0
                 else:
-                    players[0].has_changed_dir = 0
+                    if pushed_keys[key_map[t_mov_left]]:
+                        players[0].riding.change_dir("l")
+                    elif pushed_keys[key_map[t_mov_up]]:
+                        players[0].riding.change_dir("u")
+                    elif pushed_keys[key_map[t_mov_right]]:
+                        players[0].riding.change_dir("r")
+                    elif pushed_keys[key_map[t_mov_down]]:
+                        players[0].riding.change_dir("d")
+                    else:
+                        players[0].has_changed_dir = 0
                 
         if not players[0].guis:
             players[0].world.update()

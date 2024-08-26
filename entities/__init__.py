@@ -1,47 +1,51 @@
 from uti.vector import *
 from uti.hitbox import *
-from quests import *
 from uti.textures import *
 from interface import *
 from items import *
 import pygame as py
 from events import *
+from pokemons import *
+from langs import *
+
+inventory_keys = [
+    "misc",
+    "balls"
+    "health",
+    "berries",
+    "keys"
+]
 
 class Character:
     def __init__(self, x : float, y : float, world):
-        self.inventaire : list[Item] = [items["Air"](1) for i in range(10)]
+        self.inventory : dict[str, list[Item]] = {k : [items["Air"](1) for i in range(10)] for k in inventory_keys}
         self.is_moving = 0
-        self.inventaire_idx = 0 
-        self.pv = 100
-        self.pvmax = 100
-        self.effects = []
         self.hitbox = Hitbox(HITBOX_RECT_t, Vec(0, 0), width = 50, height = 50)
         self.current_texture = MC_FRAMES[2][0]
         self.current_frame = 0
         self.frame_cooldown = 0
         self.frames : list[tuple[py.Surface, py.Surface, py.Surface]] = MC_FRAMES
         self.pos = Vec(x, y)
-        self.protection = 0
         self.dir : str = "d" #d -> down  |  u -> up  |  r -> right  |  l -> left  |
         self.level = 0
         self.speed = 3 # px / tick
         self.isvisible=True
         self.render_distance=3
-        self.change_world(world)
         self.chunk_border = False
         self.riding : Npc = None # entity wich the player is riding
         self.zoom_out = 1
-        self.speed_multiplier : dict[str, int] = {} # name : value
-        self.transparent = False # si on peut passer a travers != de invisble
         self.guis : list[Gui] = []
         self.data = {} # str-> str | int | float | list | dict
         self.is_world_editor = False
         self.day_count = 0
         self.tick_count = 0
-        self.quests : dict[str, Quest] = {} # incompleted quests
-        self.quests_completed : dict[str, Quest] = {}
         self.save_id = "NULL"
         self.has_changed_dir = 0
+        self.team = [MISSING_NO(1, "", 0, 0)]
+        self.change_world(world)
+        self.pc_boxes = []
+        self.pc_boes_count = 0
+        self.lang = langs[1]
     
 
     def next_frame(self, dir : int):
@@ -82,6 +86,18 @@ class Character:
                 self.current_texture = self.frames[1][0]
     def can_change_speed(self):
         return int(self.pos.x) % TILE_SIZE == 0 and int(self.pos.y) % TILE_SIZE == 0
+    def can_change_dir(self):
+        return self.can_change_speed()
+    def change_dir(self, d : str):
+        self.dir = d
+        if self.dir == "d":
+            self.current_texture = self.frames[2][0]
+        elif self.dir == "u":
+            self.current_texture = self.frames[0][0]
+        elif self.dir == "l":
+            self.current_texture = self.frames[3][0]
+        else:
+            self.current_texture = self.frames[1][0]
     def move_dir(self, dir : str):
         if self.dir != dir and self.can_change_speed():
             self.has_changed_dir = -15
@@ -96,7 +112,7 @@ class Character:
                 self.current_texture = self.frames[1][0]
         if self.has_changed_dir > 0:
             self.has_changed_dir -= 1
-        if not self.is_moving and 0 >= self.has_changed_dir:
+        if not self.is_moving and  self.has_changed_dir <= 0:
             if self.has_changed_dir < 0:
                 self.has_changed_dir = -self.has_changed_dir
             self.dir = dir

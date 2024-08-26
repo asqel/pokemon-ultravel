@@ -3,13 +3,11 @@ import importlib as imp
 import os
 
 class Item:
-    def __init__(self, id : str, max_stack : int, texture : py.Surface, quantity : int, display_name = None) -> None:
+    def __init__(self, id : str, max_stack : int, texture : py.Surface, quantity : int) -> None:
         self.max_stack=max_stack
         self.id=id
         self.texture=texture
         self.quantity=quantity
-        self.data = {}
-        self.display_name = display_name
     
     def on_use(self, world, user):
         ...
@@ -21,10 +19,12 @@ class Item:
         i = items[self.id](self.quantity)
         i.max_stack = self.max_stack
         i.texture = self.texture
-        i.data = self.data
         i.on_inventory_tick = self.on_inventory_tick
         i.on_use = self.on_use
         return i
+
+    def get_display_name(self) -> str:
+        return str(self.id)
 
 items :dict[str,Item] = {}
 

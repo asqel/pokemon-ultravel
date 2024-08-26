@@ -511,18 +511,10 @@ class World:
             i.tick(self)
         players[0].tick()
 
-        self.has_to_collide=False
+        self.has_to_collide = False
         if players[0].riding:
             players[0].pos = players[0].riding.pos
             players[0].riding.world = players[0].world
-        if players[0].pv<=0:
-            players.close_gui()
-            players[0].open_gui("Game_Over")
-        for i in players[0].inventaire:
-            i.on_inventory_tick(self,players[0])
-        for i in range(10):
-            if players[0].inventaire[i].quantity <= 0:
-                players[0].inventaire[i] = items["Air"](1)
         return 0
 
     def remove_background_Obj(self, pos : Vec) -> None:

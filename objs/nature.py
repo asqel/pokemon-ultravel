@@ -1,6 +1,9 @@
 from pygame import Surface
 from objs import *
 from random import randint
+import interface.fight as fight
+import pokemons as pk
+import items
 
 from uti import Vec
 
@@ -24,6 +27,9 @@ class Campfire(Obj):
         if self.current_frame >= 5:
             self.current_frame = 0
         self.texture = Textures["Obj"][f"campfire{self.current_frame}"]
+
+    def on_interact(self, world, user):
+        fight.new_fight(user, [pk.Pokemons_id[1][1](23, "huit", -1, 1, items.items["Air"](1))])
 
 
 registerObj(Campfire)

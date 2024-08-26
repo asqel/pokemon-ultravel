@@ -5,8 +5,8 @@ import importlib as imp
 
 py.font.init()
 
-main_font=py.font.SysFont("Consolas, 'Courier New', monospace",23)
-main_font_40=py.font.SysFont("Consolas, 'Courier New', monospace",40)
+main_font=py.font.SysFont("assets/fonts/VCR_OSD_MONO_1.001.ttf",23)
+main_font_40=py.font.SysFont("assets/fonts/VCR_OSD_MONO_1.001.ttf",40)
 
 class Gui:
     def __init__(self, name, data, player) -> None:

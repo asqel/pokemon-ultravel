@@ -4,6 +4,7 @@ import objs
 from uti import *
 from events import *
 from typing import TypedDict
+import entities as en
 import os
 
 worlds_path = os.path.join(os.path.abspath("."), "worlds")
@@ -111,6 +112,11 @@ def world_exists(name : str, mod : str = "") -> bool:
     else:
         path = os.path.join(worlds_path, name)
     return os.path.exists(path) and os.path.isdir(path)
+
+def save_player(player : 'en.Character'):
+    res = {}
+    
+
 """
 
 while playing chunks loaded are loaded and unloaded

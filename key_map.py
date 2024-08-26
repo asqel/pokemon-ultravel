@@ -15,43 +15,18 @@ t_mov_down = "mov down"
 t_mov_left = "mov left"
 t_mov_right = "mov right"
 t_proteo = "protego"
-t_use_item = "use item"
-t_drop_item = "drop item"
 t_use_object = "use object"
 t_sprint = "sprint"
-t_slot1 = "slot 1"
-t_slot2 = "slot 2"
-t_slot3 = "slot 3"
-t_slot4 = "slot 4"
-t_slot5 = "slot 5"
-t_slot6 = "slot 6"
-t_slot7 = "slot 7"
-t_slot8 = "slot 8"
-t_slot9 = "slot 9"
-t_slot10 = "slot 10"
-t_open_chat = "open chat"
+t_stay = "stay"
 
 key_entries = [
     t_mov_up,
     t_mov_down,
     t_mov_left,
     t_mov_right,
-    t_proteo,
-    t_use_item,
-    t_drop_item,
     t_use_object,
     t_sprint,
-    t_slot1,
-    t_slot2,
-    t_slot3,
-    t_slot4,
-    t_slot5,
-    t_slot6,
-    t_slot7,
-    t_slot8,
-    t_slot9,
-    t_slot10,
-    t_open_chat
+    t_stay
 ]
 """
 key names:
