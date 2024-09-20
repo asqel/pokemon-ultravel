@@ -2,6 +2,7 @@ from pygame import Surface
 from objs import *
 from random import randint
 import interface.fight as fight
+import entities as en
 import pokemons as pk
 import items
 
@@ -40,3 +41,26 @@ register_simple_obj("Ruin_wall1", Textures["Obj"]["ruin_wall1"])
 register_simple_obj("Ruin_wall2", Textures["Obj"]["ruin_wall2"])
 register_simple_obj("Ruin_wall3", Textures["Obj"]["ruin_wall3"])
 register_simple_obj("Ruin_wall4", Textures["Obj"]["ruin_wall4"])
+
+class Tall_grass(Obj):
+    def __init__(self) -> None:
+        super().__init__("Tall_grass", 0, Textures["Obj"]["tall_grass"], False)
+
+    def on_walk_in(self, world, user, pos):
+        return
+registerObj(Tall_grass)
+
+class Tree(Obj):
+    def __init__(self) -> None:
+        super().__init__("Tree", 1, Textures["Obj"]["tree2"])
+
+class Invisible_obj(Obj):    
+    def __init__(self) -> None:
+        if not en.players[0].is_world_editor:
+            super().__init__("Invisible_obj", 1, NOTHING_TEXTURE_SMALL)
+        else:
+            super().__init__("Invisible_obj", 0, Textures["Obj"]["invisible_obj"])
+        
+
+registerObj(Tree)
+registerObj(Invisible_obj)

@@ -2,7 +2,7 @@ from uti.vector import *
 from uti.hitbox import *
 from uti.textures import *
 from interface import *
-from items import *
+import items
 import pygame as py
 from events import *
 from pokemons import *
@@ -18,7 +18,7 @@ inventory_keys = [
 
 class Character:
     def __init__(self, x : float, y : float, world):
-        self.inventory : dict[str, list[Item]] = {k : [items["Air"](1) for i in range(10)] for k in inventory_keys}
+        self.inventory : dict[str, list[items.Item]] = {k : [items.items["Air"](1) for i in range(10)] for k in inventory_keys}
         self.is_moving = 0
         self.hitbox = Hitbox(HITBOX_RECT_t, Vec(0, 0), width = 50, height = 50)
         self.current_texture = MC_FRAMES[2][0]
@@ -75,6 +75,7 @@ class Character:
             if int(self.pos.x) % TILE_SIZE == 0 and int(self.pos.y) % TILE_SIZE == 0:
                 self.is_moving = 0
                 self.has_changed_dir = 0
+                self.world.walk_in_at(self, self.pos)
         else:
             if self.dir == "d":
                 self.current_texture = self.frames[2][0]

@@ -14,7 +14,6 @@ t_mov_up = "mov up"
 t_mov_down = "mov down"
 t_mov_left = "mov left"
 t_mov_right = "mov right"
-t_proteo = "protego"
 t_use_object = "use object"
 t_sprint = "sprint"
 t_stay = "stay"
@@ -85,4 +84,33 @@ def load_keys():
 
 def register_key_entry(key_entry : str):
     key_entries.append(key_entry)
+
+
+def get_pressed(events: list[py.event.Event]) -> dict[str, int]:
+    """
+    key: state (0: nothing, 1: pressed, 2: released)
+    """
+    res = {i : 0 for i in key_entries}
+    for i in events:
+        if i.type == py.KEYDOWN:
+            for k in key_map.keys():
+                if i.key == key_map[k]:
+                    res[k] = 1
+                    break
+        elif i.type == py.KEYUP:
+            for k in key_map.keys():
+                if i.key == key_map[k]:
+                    res[k] = 2
+                    break
+        if i.type == py.MOUSEBUTTONDOWN:
+            for k in key_map.keys():
+                if (1, i.button) == key_map[k]:
+                    res[k] = 1
+                    break
+        elif i.type == py.MOUSEBUTTONUP:
+            for k in key_map.keys():
+                if (1, i.button) == key_map[k]:
+                    res[k] = 2
+                    break
+    return res
 

@@ -3,6 +3,7 @@ from uti import *
 import pygame as py
 import os 
 import importlib as imp
+import copy
 
 
 OBJ_SIZE = TILE_SIZE # px
@@ -18,20 +19,18 @@ class Obj:
     
     def on_interact(self, world, user):
         ...
-    def on_walk_in(self, world, user):
+    def on_walk_in(self, world, user, pos:Vec):
         ...
     def on_draw(self, world, has_been_drawn, pos : Vec, screen_pos :Vec):
         ...
     def tick(self, world):
         ...
-    def obj_copy(self):
-        return Obj(self.id,self.toplayer,self.texture,self.hitbox,self.data)
 
     def data_to_json(self) -> js.pk_dict:
         keys = self.data.keys()
         assert len(keys) == 0 or any(str != type(i) for i in keys)
         return self.data
-    
+
     def to_dict(self) -> js.pk_dict:
         return {"id": self.id, "data": self.data_to_json()}
 

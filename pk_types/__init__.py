@@ -493,7 +493,7 @@ TYPE_TABLE : dict[str, dict[str, int | float]] = {
 		"ground": 2,
 		"flying": 1,
 		"psychic": 1,
-		"bug": 2,
+		"bug": 1,
 		"rock": 0.5,
 		"ghost": 1,
 		"dragon": 0.5,
@@ -552,8 +552,8 @@ def get_type_mult2(attack, target1, target2):
 
 
 if __name__ == "__main__":
-	t1 = PK_T_FIRE
-	t2 = PK_T_FIGHTING
+	t1 = PK_T_BUG
+	t2 = PK_T_SUGAR
 	print(f"{t1} / {t2}")
 	d = get_weakness2(t1, t2)
 	for i in d.keys():

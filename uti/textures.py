@@ -18,6 +18,7 @@ display_screen = py.display.set_mode((960,540),py.RESIZABLE)
 screen = py.Surface((960,540))
 py.display.set_allow_screensaver(True)
 py.display.set_caption("Pokemon Ultravel")
+py.display.set_icon(py.image.load(f'{path}/assets/other/logo.png'))
 
 
 """
@@ -162,7 +163,8 @@ MC2_FRAMES = [
     [Textures["player"]["mc2_l0"], Textures["player"]["mc2_l1"], Textures["player"]["mc2_l2"]]
 ]
 
-
+NOTHING_TEXTURE_SMALL=py.Surface((1,1)).convert_alpha()
+NOTHING_TEXTURE_SMALL.fill(py.Color(0,0,0,0))
 NOTHING_TEXTURE=py.Surface((50,50)).convert_alpha()
 NOTHING_TEXTURE.fill(py.Color(0,0,0,0))
 

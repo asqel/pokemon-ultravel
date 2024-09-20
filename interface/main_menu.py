@@ -17,7 +17,7 @@ class Main_menu(Gui):
 	def draw(self, screen : py.Surface):
 		screen.fill((0,0,0))
 		
-		text = main_font_40.render("Pokémon ultravel", 0, (116, 44, 156))
+		text = main_font_30.render("Pokémon ultravel", 0, (116, 44, 156))
 		screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, 50))
 
 		text = main_font.render("Press any key to start", 0, (116, 44, 156))

@@ -1,5 +1,7 @@
 import pygame as py
 import importlib as imp
+import pokemons as pk
+import entities as en
 import os
 
 class Item:
@@ -25,8 +27,14 @@ class Item:
 
     def get_display_name(self) -> str:
         return str(self.id)
+    
+class Ball_item(Item):
+    def __init__(self, id: str, max_stack: int, texture: py.Surface, quantity: int) -> None:
+        super().__init__(id, max_stack, texture, quantity)
+    def catch_bonus(self, player: 'en.Character', pk_team_idx: int, to_catch : 'pk.Pokemon') -> float:
+        return 1
 
-items :dict[str,Item] = {}
+items : dict[str,Item] = {}
 
 
 def registerItem(item : type):

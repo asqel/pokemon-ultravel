@@ -6,6 +6,7 @@ from objs import *
 from events import *
 import json
 import jsonizer as js
+import items
 
 #in pixel (its a square)
 CHUNK_SIZE = 20 * TILE_SIZE
@@ -237,7 +238,7 @@ class World:
         for i in events[Event_on_world_load]:
             i.function(players, self)
 
-    def spawn_item(self, item : Item, pos : Vec):
+    def spawn_item(self, item : items.Item, pos : Vec):
         i = Npcs["Item_entity"](pos)
         i.item = item
         i.current_texture = item.texture
@@ -537,6 +538,13 @@ class World:
         c = self.get_Chunk_from_pos(pos)
         pos = (pos - c.top_left_pos)// OBJ_SIZE
         c.dyn_objects_foreground[pos.y][pos.x] = default_air
+    
+    def walk_in_at(self, player, pos: Vec):
+        self.get_background_Obj(pos).on_walk_in(self, player, pos)
+        self.get_Obj(pos).on_walk_in(self, player, pos)
+        self.get_Obj_fore(pos).on_walk_in(self, player, pos)
+        self.get_dyn_Obj(pos).on_walk_in(self, player, pos)
+        self.get_dyn_Obj_fore(pos).on_walk_in(self, player, pos)
 
 def newChunk(pos:Vec,world:World) -> Chunk:
     return Chunk(pos,world)

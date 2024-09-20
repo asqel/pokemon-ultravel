@@ -256,7 +256,7 @@ def main():
             i.function(Textures)
 
         starting_world = World("starting", [255, 255, 255])
-        players.append(Character(TILE_SIZE * 2, 0, starting_world))
+        players.append(Character(660, 180, starting_world))
         players[0].pv = 100
 
         players[0].zoom_out = 1
